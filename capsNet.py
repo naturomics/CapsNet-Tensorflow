@@ -14,12 +14,12 @@ class CapsNet(object):
                                          kernel_size=9, strides=1)
 
         # Primary Capsules
-        primaryCaps = CapsConv(num_units=8)
+        primaryCaps = CapsConv(num_units=8, with_routing=False)
         caps1 = primaryCaps(conv1, num_outputs=32, kernel_size=9, strides=2)
 
         # DigitCaps layer
-        digitCaps = CapsConv(num_units=16)
-        caps2 = digitCaps(caps1, num_outputs=10, kernel_size=9, strides=2)
+        digitCaps = CapsConv(num_units=16, with_routing=True)
+        caps2 = digitCaps(caps1, num_outputs=10)
 
         # Decoder structure in Fig. 2
         # TODO: before reconstruction the input caps2 should do masking to pick

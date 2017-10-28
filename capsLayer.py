@@ -4,23 +4,38 @@ from config import cfg
 
 
 class CapsConv(object):
-    def __init__(self, num_units):
+    def __init__(self, num_units, with_routing=True):
         ''' Capsule convolution.
         Args:
             num_units: the length of the output vector of a capsule.
         '''
         self.num_units = num_units
+        self.with_routing = with_routing
 
-    def __call__(self, input, num_outputs, kernel_size, strides):
+    def __call__(self, input, num_outputs, kernel_size=None, strides=None):
         self.num_outputs = num_outputs
         self.kernel_size = kernel_size
         self.strides = strides
 
+        if self.with_routing:
+            # the DigitCaps layer
+            # Return a list with 10 capsule output, each capsule is a tensor
+            # with shape [batch_size, 1, 16, 1]
 
-class Routing(object):
+            # Reshape the input into shape [batch_size, 1152, 8, 1]
+            self.input = tf.reshape(input, shape=(cfg.batch_size, 1152, 8, 1))
+            capsules = [Capsule() for i in range(self.num_outputs)]
+            capsules = [capsules[i](input) for i in range(self.num_outputs)]
+            return(capsules)
+        else:
+            # the PrimaryCaps layer
+            pass
+
+
+class Capsule(object):
     ''' The routing algorithm.
     Args:
-        input: A Tensor with shape [batch_size, num_caps, length(u_i)]
+        input: A Tensor with shape [batch_size, num_caps, length(u_i), 1]
 
     Returns:
         A Tensor of shape [batch_size, 1, length(v_j), 1] representing the
@@ -32,8 +47,6 @@ class Routing(object):
 
     def __init__(self):
         # [batch_size, 32x6x6, 8]
-        self.input = tf.placeholder(tf.float32,
-                                    shape=(cfg.batch_size, 1152, 8, 1))
         with tf.variable_scope('routing'):
             self.W_ij = tf.get_variable('w_ij', shape=(1, 1152, 16, 8))
             self.b_ij = tf.get_variable('b_ij', shape=(1, 1152, 1, 1))
@@ -45,6 +58,7 @@ class Routing(object):
         Returns:
             shape [batch_size, 1, 16, 1]
         '''
+        self.input = input
         for r_iter in cfg.iter_routing:
             # line 4:
             # [1, 1152, 1, 1]
