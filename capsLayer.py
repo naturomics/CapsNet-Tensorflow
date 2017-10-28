@@ -19,13 +19,13 @@ class CapsConv(object):
 
         if self.with_routing:
             # the DigitCaps layer
-            # Return a list with 10 capsule output, each capsule is a tensor
-            # with shape [batch_size, 1, 16, 1]
-
             # Reshape the input into shape [batch_size, 1152, 8, 1]
             self.input = tf.reshape(input, shape=(cfg.batch_size, 1152, 8, 1))
             capsules = [Capsule() for i in range(self.num_outputs)]
             capsules = [capsules[i](input) for i in range(self.num_outputs)]
+
+            # Return a tensor with shape [batch_size, 10, 16, 1]
+            capsules = tf.concat(capsules, axis=1)
             return(capsules)
         else:
             # the PrimaryCaps layer
