@@ -1,9 +1,10 @@
 # CapsNet-Tensorflow
-A Tensorflow implementation of CapsNet in Hinton's paper ['Dynamic Routing Between Capsules'](https://arxiv.org/abs/1710.09829)
+A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
 ## Requirements
 - Python
-- [Tensorflow](https://github.com/tensorflow/tensorflow)
+- Numpy
+- [Tensorflow](https://github.com/tensorflow/tensorflow) (I'm using 1.3.0, others should work, too)
 
 ## Usage
 
