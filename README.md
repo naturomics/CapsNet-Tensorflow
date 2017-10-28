@@ -3,7 +3,7 @@ A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Betwee
 
 ## Requirements
 - Python
-- Numpy
+- NumPy
 - [Tensorflow](https://github.com/tensorflow/tensorflow) (I'm using 1.3.0, others should work, too)
 
 ## Usage
