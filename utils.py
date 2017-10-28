@@ -24,4 +24,4 @@ def load_mnist(path):
     trY = np.asarray(trY)
     teY = np.asarray(teY)
 
-    return trX, trY, teX, teX
+    return trX / 255., trY, teX / 255., teY
