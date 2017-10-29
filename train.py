@@ -8,7 +8,7 @@ from capsNet import CapsNet
 if __name__ == "__main__":
     trainX, trainY, testX, testY = load_mnist(cfg.dataset)
 
-    capsNet = CapsNet()
+    capsNet = CapsNet(is_training=cfg.is_training)
     tf.logging.info('Graph loaded')
     sv = tf.train.Supervisor()
 

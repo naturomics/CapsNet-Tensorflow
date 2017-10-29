@@ -1,17 +1,32 @@
 import tensorflow as tf
 
 from config import cfg
+from utils import get_batch_data
 from capsLayer import CapsConv
 
 
 class CapsNet(object):
-    def __init__(self):
-        self.input = tf.placeholder(tf.float32, shape=(cfg.batch_size, 28, 28))
+    def __init__(self, is_training=True):
+        if is_training:
+            self.X, self.Y = get_batch_data()
+
+            self.build_arch()
+            self.loss()
+
+            t_vars = tf.trainable_variables()
+            self.optimizer = tf.train.AdamOptimizer()
+            self.train_op = self.optimizer.minimize(self.total_loss,
+                                                    var_list=t_vars)
+        else:
+            self.X = tf.placeholder(tf.float32,
+                                    shape=(cfg.batch_size, 28, 28, 1))
+
+        tf.logging.info('Seting up the main structure')
 
     def build_arch(self):
         # Conv1, [batch_size, 20, 20, 256]
-        conv1 = tf.contrib.layers.conv2d(self.input, num_outputs=256,
-                                         kernel_size=9, strides=1)
+        conv1 = tf.contrib.layers.conv2d(self.X, num_outputs=256,
+                                         kernel_size=9, stride=1)
 
         # Primary Capsules, [batch_size, 1152, 8, 1]
         primaryCaps = CapsConv(num_units=8, with_routing=False)
@@ -50,4 +65,4 @@ class CapsNet(object):
         self.reconstruction_err = tf.reduce_mean(squared)
 
         # 3. Total loss
-        self.tatol_loss = self.margin_loss + 0.0005 * self.reconstruction_err
+        self.total_loss = self.margin_loss + 0.0005 * self.reconstruction_err
