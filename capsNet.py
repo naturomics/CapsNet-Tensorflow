@@ -17,7 +17,7 @@ class CapsNet(object):
         primaryCaps = CapsConv(num_units=8, with_routing=False)
         caps1 = primaryCaps(conv1, num_outputs=32, kernel_size=9, strides=2)
 
-        # DigitCaps layer, [batch_size, 10, 8, 1]
+        # DigitCaps layer, [batch_size, 10, 16, 1]
         digitCaps = CapsConv(num_units=16, with_routing=True)
         self.caps2 = digitCaps(caps1, num_outputs=10)
 
@@ -37,7 +37,7 @@ class CapsNet(object):
         # [batch_size, 10, 1, 1]
         max_l = tf.square(tf.maximum(0, cfg.m_plus - v_length))
         max_r = tf.square(tf.maximum(0, v_length - cfg.m_minus))
-        # TODO:calc T_c
+        # TODO:calc T_c [batch_size, 10, 1, 1]
         T_c = ''
         # [batch_size, 10, 1, 1, 1]
         L_c = T_c * max_l + cfg.lambda_val * (1 - T_c) * max_r
