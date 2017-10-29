@@ -7,6 +7,7 @@
 A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
 **The code is not complete yet, I'm trying to finish it as quickly as possible. [Here](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code. Thanks for your focus**
+
 Give me one day more, and I will move the earth. ---- Archimedes :blush:
 
 ## Requirements
