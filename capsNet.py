@@ -26,11 +26,15 @@ class CapsNet(object):
     def build_arch(self):
         # Conv1, [batch_size, 20, 20, 256]
         conv1 = tf.contrib.layers.conv2d(self.X, num_outputs=256,
-                                         kernel_size=9, stride=1)
+                                         kernel_size=9, stride=1,
+                                         padding='VALID')
+        assert conv1.get_shape() == [cfg.batch_size, 20, 20, 256]
 
+        # TODO: Rewrite the 'CapsConv' class as a function
         # Primary Capsules, [batch_size, 1152, 8, 1]
         primaryCaps = CapsConv(num_units=8, with_routing=False)
-        caps1 = primaryCaps(conv1, num_outputs=32, kernel_size=9, strides=2)
+        caps1 = primaryCaps(conv1, num_outputs=32, kernel_size=9, stride=2)
+        assert caps1.get_shape() == [cfg.batch_size, 1152, 8, 1]
 
         # DigitCaps layer, [batch_size, 10, 16, 1]
         digitCaps = CapsConv(num_units=16, with_routing=True)
