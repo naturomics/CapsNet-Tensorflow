@@ -1,7 +1,13 @@
 # CapsNet-Tensorflow
+
+[![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=plastic)](CONTRIBUTING.md)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=plastic)](https://opensource.org/licenses/Apache-2.0)
+![completion](https://img.shields.io/badge/completion%20state-70%25-blue.svg?style=plastic)
+
 A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
-**The code is not complete yet, I'm trying to finish it as quickly as possible. [Here](https://zhihu.com/question/67287444/answer/251460831) is my understanding of this paper on section 4(the core part of CapsNet). Thanks for your focus**
+**The code is not complete yet, I'm trying to finish it as quickly as possible. [Here](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code. Thanks for your focus**
+Give me one day more, and I will move the earth. ---- Archimedes :blush:
 
 ## Requirements
 - Python
