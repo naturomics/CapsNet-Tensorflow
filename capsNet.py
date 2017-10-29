@@ -50,12 +50,18 @@ class CapsNet(object):
     def loss(self):
         # 1. The margin loss
 
-        # [batch_size, 10, 1, 1]
-        v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2), axis=2))
+        # calc ||v_c||
+        # [batch_size, 10, 16, 1] => [batch_size, 10, 1, 1]
+        v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2), axis=2, keep_dims=True))
+        assert v_length.get_shape() == [cfg.batch_size, 10, 1, 1]
 
         # [batch_size, 10, 1, 1]
-        max_l = tf.square(tf.maximum(0, cfg.m_plus - v_length))
-        max_r = tf.square(tf.maximum(0, v_length - cfg.m_minus))
+        # max_l = max(0, m_plus-||v_c||)^2
+        max_l = tf.square(tf.maximum(0., cfg.m_plus - v_length))
+        # max_r = max(0, ||v_c||-m_minus)^2
+        max_r = tf.square(tf.maximum(0., v_length - cfg.m_minus))
+        assert max_l.get_shape() == [cfg.batch_size, 10, 1, 1]
+
         # TODO:calc T_c [batch_size, 10, 1, 1]
         T_c = ''
         # [batch_size, 10, 1, 1, 1]
