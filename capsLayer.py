@@ -55,11 +55,14 @@ class CapsConv(object):
 
             # b_IJ: [1, num_caps_l, num_caps_l_plus_1, 1]
             b_IJ = tf.zeros(shape=[1, 1152, 10, 1], dtype=np.float32)
-            capsules, b_IJ = [capsule(input, b_IJ, j) for j in range(self.num_outputs)]
+            capsules = []
+            for j in range(self.num_outputs):
+                caps_j, b_IJ = capsule(input, b_IJ, j)
+                capsules.append(caps_j)
 
             # Return a tensor with shape [batch_size, 10, 16, 1]
             capsules = tf.concat(capsules, axis=1)
-            exit()
+            assert capsules.get_shape() == [cfg.batch_size, 10, 16, 1]
 
         return(capsules)
 
@@ -90,8 +93,7 @@ def capsule(input, b_IJ, idx_j):
         assert u_hat.get_shape() == [cfg.batch_size, 1152, 16, 1]
 
         shape = b_IJ.get_shape().as_list()
-        begin = [0, 0, idx_j, 0]
-        size = [shape[0], shape[1], 1, shape[3]]
+        size_splits = [idx_j, 1, shape[2] - idx_j - 1]
         for r_iter in range(cfg.iter_routing):
             # line 4:
             # [1, 1152, 10, 1]
@@ -101,8 +103,8 @@ def capsule(input, b_IJ, idx_j):
             # line 5:
             # weighting u_hat with c_I in the third dim,
             # then sum in the second dim, resulting in [batch_size, 1, 16, 1]
-            b_Ij = tf.slice(b_IJ, begin, size)
-            c_Ij = tf.slice(c_IJ, begin, size)
+            b_Il, b_Ij, b_Ir = tf.split(b_IJ, size_splits, axis=2)
+            c_Il, c_Ij, b_Ir = tf.split(c_IJ, size_splits, axis=2)
             assert c_Ij.get_shape() == [1, 1152, 1, 1]
 
             s_j = tf.multiply(c_Ij, u_hat)
@@ -119,11 +121,11 @@ def capsule(input, b_IJ, idx_j):
             # tile v_j from [batch_size ,1, 16, 1] to [batch_size, 1152, 16, 1]
             # [16, 1].T x [16, 1] => [1, 1], then reduce mean in the
             # batch_size dim, resulting in [1, 1152, 1, 1]
-            v_j = tf.tile(v_j, [1, 1152, 1, 1])
-            u_produce_v = tf.matmul(u_hat, v_j, transpose_a=True)
+            v_j_tiled = tf.tile(v_j, [1, 1152, 1, 1])
+            u_produce_v = tf.matmul(u_hat, v_j_tiled, transpose_a=True)
             assert u_produce_v.get_shape() == [cfg.batch_size, 1152, 1, 1]
             b_Ij += tf.reduce_sum(u_produce_v, axis=0, keep_dims=True)
-            b_IJ[:, :, idx_j, :] = b_Ij
+            b_IJ = tf.concat([b_Il, b_Ij, b_Ir], axis=2)
 
         return(v_j, b_IJ)
 
