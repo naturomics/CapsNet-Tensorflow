@@ -17,7 +17,7 @@ if you find out any problems, please let me know. I will try my best to 'kill' i
 In the day of waiting, be patient: Merry days will come, believe. ---- Alexander PuskinIf :blush:
 
 ## Chat group:
-WeChat: ![wechat](imgs/wechat_group.jpg)
+WeChat: ![wechat](imgs/wechat_group.png)
 Gitter: [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=plastic)](https://gitter.im/CapsNet-Tensorflow/Lobby)
 
 ## Requirements
