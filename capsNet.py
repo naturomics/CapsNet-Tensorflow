@@ -15,10 +15,10 @@ class CapsNet(object):
                 self.build_arch()
                 self.loss()
 
-                t_vars = tf.trainable_variables()
+                # t_vars = tf.trainable_variables()
                 self.optimizer = tf.train.AdamOptimizer()
-                self.train_op = self.optimizer.minimize(self.total_loss,
-                                                        var_list=t_vars)
+                self.global_step = tf.Variable(0, name='global_step', trainable=False)
+                self.train_op = self.optimizer.minimize(self.total_loss, global_step=self.global_step)  # var_list=t_vars)
             else:
                 self.X = tf.placeholder(tf.float32,
                                         shape=(cfg.batch_size, 28, 28, 1))
@@ -118,4 +118,6 @@ class CapsNet(object):
         tf.summary.scalar('margin_loss', self.margin_loss)
         tf.summary.scalar('reconstruction_loss', self.reconstruction_err)
         tf.summary.scalar('total_loss', self.total_loss)
+        recon_img = tf.reshape(self.decoded, shape=(cfg.batch_size, 28, 28, 1))
+        tf.summary.image('reconstruction_img', recon_img)
         self.merged_sum = tf.summary.merge_all()

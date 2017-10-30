@@ -24,6 +24,7 @@ Gitter: [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=plast
 - Python
 - NumPy
 - [Tensorflow](https://github.com/tensorflow/tensorflow) (I'm using 1.3.0, others should work, too)
+- tqdm (for showing training progress info)
 
 ## Usage
 
@@ -48,8 +49,11 @@ $ gunzip data/mnist/*.gz
 **Step 3.** 
 Start training with command line:
 ```
+$ pip install tqdm
 $ python train.py
 ```
+
+the tqdm package is not necessrary, just a tool for showing the training progress. if you don't want it, change the loop ``for step in ...`` to ``for step in range(num_batch)`` in ``train.py``
 
 ### Evaluation
 ```
