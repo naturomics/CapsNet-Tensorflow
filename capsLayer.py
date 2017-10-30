@@ -33,13 +33,14 @@ class CapsConv(object):
             capsules = []
             for i in range(self.num_units):
                 # each capsule i: [batch_size, 6, 6, 32]
-                caps_i = tf.contrib.layers.conv2d(input,
-                                                  self.num_outputs,
-                                                  self.kernel_size,
-                                                  self.stride,
-                                                  padding="VALID")
-                caps_i = tf.reshape(caps_i, shape=(cfg.batch_size, -1, 1, 1))
-                capsules.append(caps_i)
+                with tf.variable_scope('ConvUnit_' + str(i)):
+                    caps_i = tf.contrib.layers.conv2d(input,
+                                                      self.num_outputs,
+                                                      self.kernel_size,
+                                                      self.stride,
+                                                      padding="VALID")
+                    caps_i = tf.reshape(caps_i, shape=(cfg.batch_size, -1, 1, 1))
+                    capsules.append(caps_i)
 
             assert capsules[0].get_shape() == [cfg.batch_size, 1152, 1, 1]
 
@@ -57,8 +58,9 @@ class CapsConv(object):
             b_IJ = tf.zeros(shape=[1, 1152, 10, 1], dtype=np.float32)
             capsules = []
             for j in range(self.num_outputs):
-                caps_j, b_IJ = capsule(input, b_IJ, j)
-                capsules.append(caps_j)
+                with tf.variable_scope('caps_' + str(j)):
+                    caps_j, b_IJ = capsule(input, b_IJ, j)
+                    capsules.append(caps_j)
 
             # Return a tensor with shape [batch_size, 10, 16, 1]
             capsules = tf.concat(capsules, axis=1)
