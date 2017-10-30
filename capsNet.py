@@ -7,19 +7,21 @@ from capsLayer import CapsConv
 
 class CapsNet(object):
     def __init__(self, is_training=True):
-        if is_training:
-            self.X, self.Y = get_batch_data()
+        self.graph = tf.Graph()
+        with self.graph.as_default():
+            if is_training:
+                self.X, self.Y = get_batch_data()
 
-            self.build_arch()
-            self.loss()
+                self.build_arch()
+                self.loss()
 
-            t_vars = tf.trainable_variables()
-            self.optimizer = tf.train.AdamOptimizer()
-            self.train_op = self.optimizer.minimize(self.total_loss,
-                                                    var_list=t_vars)
-        else:
-            self.X = tf.placeholder(tf.float32,
-                                    shape=(cfg.batch_size, 28, 28, 1))
+                t_vars = tf.trainable_variables()
+                self.optimizer = tf.train.AdamOptimizer()
+                self.train_op = self.optimizer.minimize(self.total_loss,
+                                                        var_list=t_vars)
+            else:
+                self.X = tf.placeholder(tf.float32,
+                                        shape=(cfg.batch_size, 28, 28, 1))
 
         tf.logging.info('Seting up the main structure')
 
@@ -54,7 +56,8 @@ class CapsNet(object):
 
         # calc ||v_c||
         # [batch_size, 10, 16, 1] => [batch_size, 10, 1, 1]
-        v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2), axis=2, keep_dims=True))
+        v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2),
+                                         axis=2, keep_dims=True))
         assert v_length.get_shape() == [cfg.batch_size, 10, 1, 1]
 
         # [batch_size, 10, 1, 1]
@@ -64,15 +67,20 @@ class CapsNet(object):
         max_r = tf.square(tf.maximum(0., v_length - cfg.m_minus))
         assert max_l.get_shape() == [cfg.batch_size, 10, 1, 1]
 
-        # TODO:calc T_c [batch_size, 10, 1, 1]
-        T_c = ''
-        # [batch_size, 10, 1, 1, 1]
+        # reshape: [batch_size, 10, 1, 1] => [batch_size, 10]
+        max_l = tf.reshape(max_l, shape=(cfg.batch_size, -1))
+        max_r = tf.reshape(max_r, shape=(cfg.batch_size, -1))
+
+        # calc T_c: [batch_size, 10]
+        # T_c = Y, is my understanding correct? Try it.
+        T_c = self.Y
+        # [batch_size, 10], element-wise multiply
         L_c = T_c * max_l + cfg.lambda_val * (1 - T_c) * max_r
 
         self.margin_loss = tf.reduce_mean(tf.reduce_sum(L_c, axis=1))
 
         # 2. The reconstruction loss
-        orgin = tf.reshape(self.input, shape=(cfg.batch_size, -1))
+        orgin = tf.reshape(self.X, shape=(cfg.batch_size, -1))
         squared = tf.square(self.decoded - orgin)
         self.reconstruction_err = tf.reduce_mean(squared)
 
