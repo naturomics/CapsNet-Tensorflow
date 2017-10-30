@@ -26,6 +26,7 @@ def load_mnist(path):
     trX = tf.convert_to_tensor(trX / 255., tf.float32)
     teX = tf.convert_to_tensor(teX / 255., tf.float32)  # [10000, 28, 28, 1]
 
+    # => [num_samples, 10]
     trY = tf.one_hot(trY, depth=10, axis=1, dtype=tf.float32)
     teY = tf.one_hot(teY, depth=10, axis=1, dtype=tf.float32)
 

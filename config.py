@@ -22,7 +22,7 @@ flags.DEFINE_integer('iter_routing', 3, 'number of iterations in routing algorit
 flags.DEFINE_string('dataset', 'data/mnist', 'the path for dataset')
 flags.DEFINE_boolean('is_training', True, 'train or predict phase')
 flags.DEFINE_integer('num_threads', 8, 'number of threads of enqueueing exampls')
-
+flags.DEFINE_string('logdir', 'logdir', 'logs directory')
 
 cfg = tf.app.flags.FLAGS
 tf.logging.set_verbosity(tf.logging.INFO)
