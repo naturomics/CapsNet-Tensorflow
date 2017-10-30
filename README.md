@@ -2,13 +2,15 @@
 
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=plastic)](CONTRIBUTING.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=plastic)](https://opensource.org/licenses/Apache-2.0)
-![completion](https://img.shields.io/badge/completion%20state-80%25-blue.svg?style=plastic)
+![completion](https://img.shields.io/badge/completion%20state-90%25-blue.svg?style=plastic)
 
 A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
 - **Note:**
 
-**The code is not complete yet, but the routing algorithm and the main part of CapsNet have been done. I'm trying to finish the training pipeline today. You may see the training result tomorrow. So why don't you 'taste' the paper with [this code](capsLayer.py) first. Enjoy it. [Here](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code. Thanks for your focus**
+**The code of training phase has been running up in my computer. I'm improving it, cheers!**
+
+[Here](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code. Thanks for your focus
 
 if you find out any problems, please let me know. I will try my best to 'kill' it as quickly as possible.
 
@@ -54,7 +56,7 @@ $ python eval.py
 ## Results
 
 ### TODO:
-- Finish the MNIST version of capsNet (progress:80%)
+- Finish the MNIST version of capsNet (progress:90%)
 - Do some different experiments for capsNet:
   * Using other datasets such as CIFAR
 	* Adjusting model structure
