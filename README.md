@@ -6,9 +6,13 @@
 
 A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
-**The code is not complete yet, I'm trying to finish it as quickly as possible. [Here](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code. Thanks for your focus**
+- **Note:**
 
-Give me one day more, and I will move the earth. ---- Archimedes :blush:
+**The code is not complete yet, but the routing algorithm and the main part of CapsNet have been done. I'm trying to finish the training pipeline today. You may see the training result tomorrow. So why don't you 'taste' the paper with [this code](capsLayer.py) fisrt. Enjoy it. [Here](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code. Thanks for your focus**
+
+if you find out any problems, please let me know. I will try my best to 'kill' it as quickly as possible.
+
+In the day of waiting, be patient: Merry days will come, believe. ---- Alexander PuskinIf :blush:
 
 ## Requirements
 - Python
@@ -48,3 +52,10 @@ $ python eval.py
 
 
 ## Results
+
+### TODO:
+- Finish the MNIST version of capsNet (progress:80%)
+- Do some different experiments for capsNet:
+  * Using other datasets such as CIFAR
+	* Adjusting model structure
+- There is [another new paper](https://openreview.net/pdf?id=HJWLfGWRb) about capsules(submitted to ICLR 2018), follow-up.
