@@ -45,26 +45,48 @@ class CapsNet(object):
         self.caps2 = digitCaps(caps1, num_outputs=10)
 
         # Decoder structure in Fig. 2
-        # TODO: before reconstruction the input caps2 should do masking to pick
-        # out the activity vector of the correct digit capsule.
-        fc1 = tf.contrib.layers.fully_connected(self.caps2, num_outputs=512)
+        # 1. Do masking, how:
+        # a). calc ||v_c||, then do softmax(||v_c||)
+        # [batch_size, 10, 16, 1] => [batch_size, 10, 1, 1]
+        self.v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2),
+                                              axis=2, keep_dims=True))
+        self.softmax_v = tf.nn.softmax(self.v_length, dim=1)
+        assert self.softmax_v.get_shape() == [cfg.batch_size, 10, 1, 1]
+
+        # b). pick out the index of max softmax val of the 10 caps
+        # [batch_size, 10, 1, 1] => [batch_size] (index)
+        argmax_idx = tf.argmax(self.softmax_v, axis=1, output_type=tf.int32)
+        assert argmax_idx.get_shape() == [cfg.batch_size, 1, 1]
+
+        # c). indexing
+        # It's not easy to understand the indexing process with argmax_idx
+        # as we are 3-dim animal
+        masked_v = []
+        argmax_idx = tf.reshape(argmax_idx, shape=(cfg.batch_size, ))
+        for batch_size in range(cfg.batch_size):
+            v = self.caps2[batch_size][argmax_idx[batch_size], :]
+            masked_v.append(tf.reshape(v, shape=(1, 1, 16, 1)))
+
+        self.masked_v = tf.concat(masked_v, axis=0)
+        assert self.masked_v.get_shape() == [cfg.batch_size, 1, 16, 1]
+
+        # 2. Reconstructe the MNIST images with 3 FC layers
+        # [batch_size, 1, 16, 1] => [batch_size, 16] => [batch_size, 512]
+        vector_j = tf.reshape(self.masked_v, shape=(cfg.batch_size, -1))
+        fc1 = tf.contrib.layers.fully_connected(vector_j, num_outputs=512)
+        assert fc1.get_shape() == [cfg.batch_size, 512]
         fc2 = tf.contrib.layers.fully_connected(fc1, num_outputs=1024)
-        self.decoded = tf.contrib.layers.fully_connected(fc2, num_outputs=784)
+        assert fc2.get_shape() == [cfg.batch_size, 1024]
+        self.decoded = tf.contrib.layers.fully_connected(fc2, num_outputs=784, activation_fn=tf.sigmoid)
 
     def loss(self):
         # 1. The margin loss
 
-        # calc ||v_c||
-        # [batch_size, 10, 16, 1] => [batch_size, 10, 1, 1]
-        v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2),
-                                         axis=2, keep_dims=True))
-        assert v_length.get_shape() == [cfg.batch_size, 10, 1, 1]
-
         # [batch_size, 10, 1, 1]
         # max_l = max(0, m_plus-||v_c||)^2
-        max_l = tf.square(tf.maximum(0., cfg.m_plus - v_length))
+        max_l = tf.square(tf.maximum(0., cfg.m_plus - self.v_length))
         # max_r = max(0, ||v_c||-m_minus)^2
-        max_r = tf.square(tf.maximum(0., v_length - cfg.m_minus))
+        max_r = tf.square(tf.maximum(0., self.v_length - cfg.m_minus))
         assert max_l.get_shape() == [cfg.batch_size, 10, 1, 1]
 
         # reshape: [batch_size, 10, 1, 1] => [batch_size, 10]
