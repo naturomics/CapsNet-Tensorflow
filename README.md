@@ -59,7 +59,9 @@ $ python eval.py
 
 ## Results
 Code is still running, here some results:
+
 ![total_loss](imgs/total_loss.png)
+
 ![margin_loss](imgs/margin_loss.png)
 ![reconstruction_loss](imgs/reconstruction_loss.png)
 
