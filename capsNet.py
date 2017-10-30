@@ -30,7 +30,9 @@ class CapsNet(object):
                                          padding='VALID')
         assert conv1.get_shape() == [cfg.batch_size, 20, 20, 256]
 
-        # TODO: Rewrite the 'CapsConv' class as a function
+        # TODO: Rewrite the 'CapsConv' class as a function, the capsLay
+        # function should be encapsulated into tow function, one like conv2d
+        # and another is fully_connected in Tensorflow.
         # Primary Capsules, [batch_size, 1152, 8, 1]
         primaryCaps = CapsConv(num_units=8, with_routing=False)
         caps1 = primaryCaps(conv1, num_outputs=32, kernel_size=9, stride=2)
