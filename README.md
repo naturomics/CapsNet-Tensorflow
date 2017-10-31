@@ -19,8 +19,12 @@ In the day of waiting, be patient: Merry days will come, believe. ---- Alexander
 ## Chat group:
 WeChat: ![wechat](imgs/wechat_group.png)
 Gitter: [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=plastic)](https://gitter.im/CapsNet-Tensorflow/Lobby)
+my weChat: ![my_wechat](/imgs/my_wechat_QR.png)
 
-We have a lot of interesting discussion in the WeChat group, welcome to join us. We will release the discussion results in the name of this group, pointing out the contribution of any contributors
+- We have a lot of interesting discussion in the WeChat group, welcome to join us. We will release the discussion results in the name of this group, pointing out the contribution of any contributors
+
+- If you find out that the Wechat group QR is invalid, add my personal account.
+
 
 ## Requirements
 - Python
