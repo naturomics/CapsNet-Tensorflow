@@ -63,7 +63,7 @@ the tqdm package is not necessary, just a tool for showing the training progress
 
 ### Evaluation
 ```
-$ python eval.py
+$ python eval.py --is_training False
 ```
 
 

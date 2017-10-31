@@ -22,6 +22,7 @@ class CapsNet(object):
             else:
                 self.X = tf.placeholder(tf.float32,
                                         shape=(cfg.batch_size, 28, 28, 1))
+                self.build_arch()
 
         tf.logging.info('Seting up the main structure')
 
