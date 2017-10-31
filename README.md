@@ -6,15 +6,15 @@
 
 A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
-- **Note:**
+> - **Note:**
 
-**The routing algorithm has been found not implemented as the same as the one in the paper!(#8, thanks very much, it's my carelessness) Although it works, but not effective as the results of the paper, I've paste out some results of the 'wrong' version(It's really interesting). I'll analyze the reasons of this interesting thing**
-
-[Here](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code. Thanks for your focus
-
-if you find out any problems, please let me know. I will try my best to 'kill' it as quickly as possible.
+> 1. The routing algorithm has been found not implemented as the same as the one in the paper!(#8, thanks very much, it's my carelessness) Although the current version works, but not effective as the results in the paper, I've paste out some results of the 'wrong' version(It's really interesting). I'll analyze the reasons of this interesting thing
+> 2. I've been working continuously for the last few days, coding, talking, writing docs, so I would like to give myself half a day. I will be back tomorrow, and keep updating this repo
+> 3. [Here(知乎)](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code. Thanks for your focus
+> 4. If you find out any problems, please let me know. I will try my best to 'kill' it as quickly as possible.
 
 In the day of waiting, be patient: Merry days will come, believe. ---- Alexander PuskinIf :blush:
+
 
 ## Chat group:
 WeChat: ![wechat](imgs/wechat_group.png)
