@@ -77,15 +77,16 @@ Results for the 'wrong' version(Issues #8):
 ![reconstruction_loss](imgs/reconstruction_loss.png)
 
 - test acc
-
 ------------
 |Epoch|49|51|
-|:-----|:--:|
-|test_acc|94.69|94.71|
+|:----:|:----:|:--:|
+|test acc|94.69|94.71|
 
 ![test_img1](results/test_000.png)
-![test_img2](results/test_025.png)
-![test_img3](results/test_045.png)
+![test_img2](results/test_015.png)
+![test_img3](results/test_030.png)
+![test_img4](results/test_045.png)
+![test_img5](results/test_075.png)
 
 Results after fix Issues #8: 
 
