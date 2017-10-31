@@ -26,6 +26,7 @@ We have a lot of interesting discussion in the WeChat group, welcome to join us.
 - Python
 - NumPy
 - [Tensorflow](https://github.com/tensorflow/tensorflow) (I'm using 1.3.0, others should work, too)
+- tqdm (for showing training progress info)
 
 ## Usage
 
@@ -50,8 +51,11 @@ $ gunzip data/mnist/*.gz
 **Step 3.** 
 Start training with command line:
 ```
+$ pip install tqdm  # install it if you haven't installed yes
 $ python train.py
 ```
+
+the tqdm package is not necessary, just a tool for showing the training progress. If you don't want it, change the loop ``for in step ...`` to ``for step in range(num_batch)`` in ``train.py``
 
 ### Evaluation
 ```
