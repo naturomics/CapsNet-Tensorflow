@@ -68,7 +68,7 @@ $ python eval.py --is_training False
 
 
 ## Results
-Results for the 'wrong' version(#8) :
+Results for the 'wrong' version(Issues #8):
 
 - training loss
 ![total_loss](imgs/total_loss.png)
@@ -78,14 +78,15 @@ Results for the 'wrong' version(#8) :
 
 - test acc
 
-Epoch | 49 | 51
-:-----|:--:|
-test_acc|94.69|94.71
+|Epoch|49|51|
+|:-----|:--:|
+|test_acc|94.69|94.71|
 
-![](test_000.png)
-![](test_025.png)
-![](test_045.png)
+![test_img1](test_000.png)
+![test_img2](test_025.png)
+![test_img3](test_045.png)
 
+Results after fix Issues #8: 
 
 ### TODO:
 - Finish the MNIST version of capsNet (progress:90%)
