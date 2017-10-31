@@ -1,9 +1,9 @@
-from glob import glob
 import numpy as np
 import tensorflow as tf
 
 from config import cfg
 from utils import load_mnist
+from utils import save_images
 from capsNet import CapsNet
 
 
@@ -27,5 +27,10 @@ if __name__ == '__main__':
                 orgin_imgs = np.reshape(teX[start:end], (cfg.batch_size, -1))
                 squared = np.square(recon_imgs - orgin_imgs)
                 reconstruction_err.append(np.mean(squared))
+
+                if i % 5 == 0:
+                    imgs = np.reshape(recon_imgs, (cfg.batch_size, 28, 28, 1))
+                    size = 6
+                    save_images(imgs[0:size * size, :], [size, size], 'results/test_%03d.png' % i)
             print('test acc:')
-            print(1. - np.mean(reconstruction_err))
+            print((1. - np.mean(reconstruction_err)) * 100)
