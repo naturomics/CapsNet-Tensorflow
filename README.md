@@ -8,7 +8,7 @@ A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Betwee
 
 - **Note:**
 
-**The code of training phase has been running up in my computer. I'm improving it, cheers!**
+**The routing algorithm has been found not implemented as the same as the one in the paper!(#8, thanks very much, it's my carelessness) Although it works, but not effective as the results of the paper, I've paste out some results of the 'wrong' version(It's really interesting). I'll analyze the reasons of this interesting thing**
 
 [Here](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code. Thanks for your focus
 
@@ -20,11 +20,12 @@ In the day of waiting, be patient: Merry days will come, believe. ---- Alexander
 WeChat: ![wechat](imgs/wechat_group.png)
 Gitter: [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=plastic)](https://gitter.im/CapsNet-Tensorflow/Lobby)
 
+We have a lot of interesting discussion in the WeChat group, welcome to join us. We will release the discussion results in the name of this group, pointing out the contribution of any contributors
+
 ## Requirements
 - Python
 - NumPy
 - [Tensorflow](https://github.com/tensorflow/tensorflow) (I'm using 1.3.0, others should work, too)
-- tqdm (for showing training progress info)
 
 ## Usage
 
@@ -49,11 +50,8 @@ $ gunzip data/mnist/*.gz
 **Step 3.** 
 Start training with command line:
 ```
-$ pip install tqdm
 $ python train.py
 ```
-
-the tqdm package is not necessrary, just a tool for showing the training progress. if you don't want it, change the loop ``for step in ...`` to ``for step in range(num_batch)`` in ``train.py``
 
 ### Evaluation
 ```
