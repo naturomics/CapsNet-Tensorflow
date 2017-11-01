@@ -10,7 +10,7 @@ A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Betwee
 > 1. The code is runnable, but still some different from the paper, not a logical error, but misunstand the capsule, including The routing "for" loop, margin loss(issue #8, thanks for reminding, it's my carelessness)
 > 2. some results of the 'wrong' version has been pasted out, but not effective as the results in the paper,
 
- **Daily task**
+> **Daily task**
 > 1. Update the code of routing algorithm
 > 2. Adjust margin loss
 > 3. Improve the eval pipeline
@@ -61,7 +61,7 @@ $ gunzip data/mnist/*.gz
 **Step 3.** 
 Start training with command line:
 ```
-$ pip install tqdm  # install it if you haven't installed yes
+$ pip install tqdm  # install it if you haven't installed yet
 $ python train.py
 ```
 
@@ -96,10 +96,16 @@ Results for the 'wrong' version(Issues #8):
 ------------
 Results after fix Issues #8: 
 
+
+> My simple comments for capsule
+> 1. A new version neural unit(vector in vector out, not scalar in scalar out)
+> 2. The routing algorithm is similar to attention mechanism
+> 3. Anyway, a work with great potential, we can do a lot of work on it
+
 ------------
 ### TODO:
 - Finish the MNIST version of capsNet (progress:90%)
 - Do some different experiments for capsNet:
-  * Using other datasets such as CIFAR
-	* Adjusting model structure
+ * Using other datasets
+ * Adjusting model structure
 - There is [another new paper](https://openreview.net/pdf?id=HJWLfGWRb) about capsules(submitted to ICLR 2018), follow-up.
