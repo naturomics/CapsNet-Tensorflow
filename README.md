@@ -6,12 +6,18 @@
 
 A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
-> - **Note:**
+> **States:**
+> 1. The code is runnable, but still some different from the paper, not a logical error, but misunstand the capsule, including The routing "for" loop, margin loss(issue #8, thanks for reminding, it's my carelessness)
+> 2. some results of the 'wrong' version has been pasted out, but not effective as the results in the paper,
 
-> 1. The routing algorithm has been found not implemented as the same as the one in the paper!(#8, thanks very much, it's my carelessness) Although the current version works, but not effective as the results in the paper, I've paste out some results of the 'wrong' version(It's really interesting). I'll analyze the reasons of this interesting thing
-> 2. I've been working continuously for the last few days, coding, talking, writing docs, so I would like to give myself half a day. I will be back tomorrow, and keep updating this repo
-> 3. [Here(知乎)](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code. Thanks for your focus
-> 4. If you find out any problems, please let me know. I will try my best to 'kill' it as quickly as possible.
+ **Daily task**
+> 1. Update the code of routing algorithm
+> 2. Adjust margin loss
+> 3. Improve the eval pipeline
+
+> **Others**
+> 1. [Here(知乎)](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code.
+> 2. If you find out any problems, please let me know. I will try my best to 'kill' it as quickly as possible.
 
 In the day of waiting, be patient: Merry days will come, believe. ---- Alexander PuskinIf :blush:
 
@@ -21,7 +27,7 @@ WeChat: ![wechat](imgs/wechat_group.png)
 Gitter: [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=plastic)](https://gitter.im/CapsNet-Tensorflow/Lobby)
 my weChat: ![my_wechat](/imgs/my_wechat_QR.png)
 
-- We have a lot of interesting discussion in the WeChat group, welcome to join us. We will release the discussion results in the name of this group, pointing out the contribution of any contributors
+- We have a lot of interesting discussion in the WeChat group, welcome to join us. **But gitter & English first, please.** Anyway, we will release the discussion results in the name of this group(pointing out the contribution of any contributors)
 
 - If you find out that the Wechat group QR is invalid, add my personal account.
 
@@ -77,7 +83,6 @@ Results for the 'wrong' version(Issues #8):
 ![reconstruction_loss](imgs/reconstruction_loss.png)
 
 - test acc
-------------
 |Epoch|49|51|
 |:----:|:----:|:--:|
 |test acc|94.69|94.71|
@@ -88,12 +93,13 @@ Results for the 'wrong' version(Issues #8):
 ![test_img4](results/test_045.png)
 ![test_img5](results/test_075.png)
 
+------------
 Results after fix Issues #8: 
 
+------------
 ### TODO:
 - Finish the MNIST version of capsNet (progress:90%)
 - Do some different experiments for capsNet:
   * Using other datasets such as CIFAR
 	* Adjusting model structure
-
 - There is [another new paper](https://openreview.net/pdf?id=HJWLfGWRb) about capsules(submitted to ICLR 2018), follow-up.
