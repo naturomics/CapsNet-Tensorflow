@@ -37,6 +37,7 @@ my weChat: ![my_wechat](/imgs/my_wechat_QR.png)
 - NumPy
 - [Tensorflow](https://github.com/tensorflow/tensorflow) (I'm using 1.3.0, others should work, too)
 - tqdm (for showing training progress info)
+- scipy (for saving image)
 
 ## Usage
 
@@ -83,6 +84,7 @@ Results for the 'wrong' version(Issues #8):
 ![reconstruction_loss](imgs/reconstruction_loss.png)
 
 - test acc
+
 |Epoch|49|51|
 |:----:|:----:|:--:|
 |test acc|94.69|94.71|
