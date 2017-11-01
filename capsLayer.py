@@ -103,33 +103,34 @@ def routing(input, b_IJ):
 
     # line 3,for r iterations do
     for r_iter in range(cfg.iter_routing):
-        # line 4:
-        # => [1, 1, 1152, 10, 1]
-        c_IJ = tf.nn.softmax(b_IJ, dim=3)
-        c_IJ = tf.tile(c_IJ, [cfg.batch_size, 1, 1, 1, 1])
-        assert c_IJ.get_shape() == [cfg.batch_size, 1152, 10, 1, 1]
+        with tf.variable_scope('iter_' + str(r_iter)):
+            # line 4:
+            # => [1, 1, 1152, 10, 1]
+            c_IJ = tf.nn.softmax(b_IJ, dim=3)
+            c_IJ = tf.tile(c_IJ, [cfg.batch_size, 1, 1, 1, 1])
+            assert c_IJ.get_shape() == [cfg.batch_size, 1152, 10, 1, 1]
 
-        # line 5:
-        # weighting u_hat with c_IJ, element-wise in the last tow dim
-        # => [batch_size, 1152, 10, 16, 1]
-        s_J = tf.multiply(c_IJ, u_hat)
-        # then sum in the second dim, resulting in [batch_size, 1, 10, 16, 1]
-        s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True)
-        assert s_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
+            # line 5:
+            # weighting u_hat with c_IJ, element-wise in the last tow dim
+            # => [batch_size, 1152, 10, 16, 1]
+            s_J = tf.multiply(c_IJ, u_hat)
+            # then sum in the second dim, resulting in [batch_size, 1, 10, 16, 1]
+            s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True)
+            assert s_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
 
-        # line 6:
-        # squash using Eq.1,
-        v_J = squash(s_J)
-        assert v_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
+            # line 6:
+            # squash using Eq.1,
+            v_J = squash(s_J)
+            assert v_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
 
-        # line 7:
-        # reshape & tile v_j from [batch_size ,1, 10, 16, 1] to [batch_size, 10, 1152, 16, 1]
-        # then matmul in the last tow dim: [16, 1].T x [16, 1] => [1, 1], reduce mean in the
-        # batch_size dim, resulting in [1, 1152, 10, 1, 1]
-        v_J_tiled = tf.tile(v_J, [1, 1152, 1, 1, 1])
-        u_produce_v = tf.matmul(u_hat, v_J_tiled, transpose_a=True)
-        assert u_produce_v.get_shape() == [cfg.batch_size, 1152, 10, 1, 1]
-        b_IJ += tf.reduce_sum(u_produce_v, axis=0, keep_dims=True)
+            # line 7:
+            # reshape & tile v_j from [batch_size ,1, 10, 16, 1] to [batch_size, 10, 1152, 16, 1]
+            # then matmul in the last tow dim: [16, 1].T x [16, 1] => [1, 1], reduce mean in the
+            # batch_size dim, resulting in [1, 1152, 10, 1, 1]
+            v_J_tiled = tf.tile(v_J, [1, 1152, 1, 1, 1])
+            u_produce_v = tf.matmul(u_hat, v_J_tiled, transpose_a=True)
+            assert u_produce_v.get_shape() == [cfg.batch_size, 1152, 10, 1, 1]
+            b_IJ += tf.reduce_sum(u_produce_v, axis=0, keep_dims=True)
 
     return(v_J)
 
