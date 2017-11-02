@@ -6,13 +6,13 @@
 
 A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
-> **States:**
-> 1. The code is runnable, but still some different from the paper, not a logical error, but misunstand the capsule, including The routing "for" loop, margin loss(issue #8, thanks for reminding, it's my carelessness)
+> **Status:**
+> 1. The code is runnable. However,there are some differences between the paper and the model created. This is not a logical error, but some mis-understanding of the capsule, including the routing "for" loop, margin loss(issue #8.)
 > 2. some results of the 'wrong' version has been pasted out, but not effective as the results in the paper,
 
 > **Daily task**
 > 1. Update the code of routing algorithm
-> 2. Adjust margin loss
+> 2. Adjust margin 
 > 3. Improve the eval pipeline
 
 > **Others**
