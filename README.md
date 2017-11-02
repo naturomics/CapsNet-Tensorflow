@@ -107,4 +107,4 @@ Results after fixing Issues #8:
  ![my_wechat](/imgs/my_wechat_QR.png)
  ![nb312_wechat](/imgs/nb312_wechat.png)
 
-- Our WeChat group is growing fast, and [@nb312](https://github.com/nb312) is helping me with the wechat requets. The left one is my wechat QR, but if you just want to join our group, please contact [@nb312](https://github.com/nb312) with QR in the right side.
+- Our WeChat group is growing fast, and [@nb312](https://github.com/nb312) is helping me with the wechat request. The left one is my wechat QR, but if you just want to join our group, please contact [@nb312](https://github.com/nb312) by the QR in the right side.
