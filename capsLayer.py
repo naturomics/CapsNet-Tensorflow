@@ -58,7 +58,7 @@ class CapsLayer(object):
         if self.layer_type == 'FC':
             if self.with_routing:
                 # the DigitCaps layer, a fully connected layer
-                # Reshape the input into [batch_size, 1, 1152, 8, 1]
+                # Reshape the input into [batch_size, 1152, 1, 8, 1]
                 self.input = tf.reshape(input, shape=(cfg.batch_size, 1152, 1, 8, 1))
 
                 with tf.variable_scope('routing'):
@@ -74,7 +74,7 @@ def routing(input, b_IJ):
     ''' The routing algorithm.
 
     Args:
-        input: A Tensor with [batch_size, 1, num_caps_l=1152, length(u_i)=8, 1]
+        input: A Tensor with [batch_size, num_caps_l=1152, 1, length(u_i)=8, 1]
                shape, num_caps_l meaning the number of capsule in the layer l.
     Returns:
         A Tensor of shape [batch_size, num_caps_l_plus_1, length(v_j)=16, 1]
