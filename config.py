@@ -11,9 +11,13 @@ flags = tf.app.flags
 flags.DEFINE_float('m_plus', 0.9, 'the parameter of m plus')
 flags.DEFINE_float('m_minus', 0.1, 'the parameter of m minus')
 flags.DEFINE_float('lambda_val', 0.5, 'down weight of the loss for absent digit classes')
-flags.DEFINE_integer('batch_size', 128, 'batch size')
-flags.DEFINE_integer('epoch', 500, 'epoch')
+
+# for training
+flags.DEFINE_integer('batch_size', 32, 'batch size')
+flags.DEFINE_integer('epoch', 50, 'epoch')
 flags.DEFINE_integer('iter_routing', 3, 'number of iterations in routing algorithm')
+
+flags.DEFINE_float('stddev', 0.01, 'stddev for W initializer')
 
 
 ############################

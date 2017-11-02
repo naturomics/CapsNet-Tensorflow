@@ -3,34 +3,23 @@
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=plastic)](CONTRIBUTING.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=plastic)](https://opensource.org/licenses/Apache-2.0)
 ![completion](https://img.shields.io/badge/completion%20state-90%25-blue.svg?style=plastic)
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=plastic)](https://gitter.im/CapsNet-Tensorflow/Lobby)
 
 A Tensorflow implementation of CapsNet based on Geoffrey Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
-> **States:**
-> 1. The code runs, but still has some differences from the paper. There aren't any logical errors as of now, but there could be errors due to my misunstanding - about the capsule, including the routing "for" loop, margin loss (as pointed out in Issue #8. Thanks for the correction, it was carelessness on my part.)
-> 2. Some of the results of the 'incorrect' version have been replaced, but they are not yet as effective as the results in the paper. 
+> **Status:**
+> 1. The code runs, issue #8 fixed.
+> 2. some results of the tag v0.1 version has been pasted out, but not effective as the results in the paper
 
 > **Daily task**
-> 1. Update the code of routing algorithm
-> 2. Adjust margin loss
-> 3. Improve the eval pipeline
+> 1. Adjust margin 
+> 2. Improve the eval pipeline, integrate it into training pipeline: all you need is ``git clone``, ``cd`` and ``python main.py``
 
 > **Others**
 > 1. [Here(知乎)](https://zhihu.com/question/67287444/answer/251460831) is an answer explaining my understanding of Section 4 of the paper (the core part of CapsNet). It may prove helpful in understanding the code.
 > 2. If you find out any problems, please let me know. I will try my best to resolve them ASAP.
 
 In the day of waiting, be patient: Merry days will come, believe. ---- Alexander PuskinIf :blush:
-
-
-## Chat group:
-WeChat: ![wechat](imgs/wechat_group.png)
-Gitter: [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=plastic)](https://gitter.im/CapsNet-Tensorflow/Lobby)
-my weChat: ![my_wechat](/imgs/my_wechat_QR.png)
-
-- We have lots of interesting discussions in the WeChat group, you are welcome to join. **But gitter & English first, please.** Anyway, we will release the discussion results in the name of this group (pointing out the contribution of any contributors)
-
-- If you find out that the Wechat group QR is invalid, add my personal account.
-
 
 ## Requirements
 - Python
@@ -83,6 +72,7 @@ Results for the 'wrong' version (Details in Issue #8):
 ![reconstruction_loss](imgs/reconstruction_loss.png)
 
 - test acc
+
 |Epoch|49|51|
 |:----:|:----:|:--:|
 |test acc|94.69|94.71|
@@ -109,3 +99,8 @@ Results after fixing Issue #8:
  * Try using other datasets
  * Adjust the model structure
 - There is [another new paper](https://openreview.net/pdf?id=HJWLfGWRb) about capsules(submitted to ICLR 2018), a follow-up of the CapsNet paper.
+
+## My weChat:
+ ![my_wechat](/imgs/my_wechat_QR.png)
+
+- We have a WeChat group, welcome to join us.

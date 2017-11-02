@@ -2,7 +2,7 @@ import tensorflow as tf
 
 from config import cfg
 from utils import get_batch_data
-from capsLayer import CapsConv
+from capsLayer import CapsLayer
 
 
 class CapsNet(object):
@@ -34,19 +34,16 @@ class CapsNet(object):
                                              padding='VALID')
             assert conv1.get_shape() == [cfg.batch_size, 20, 20, 256]
 
-        # TODO: Rewrite the 'CapsConv' class as a function, the capsLay
-        # function should be encapsulated into tow function, one like conv2d
-        # and another is fully_connected in Tensorflow.
-        # Primary Capsules, [batch_size, 1152, 8, 1]
+        # Primary Capsules layer, return [batch_size, 1152, 8, 1]
         with tf.variable_scope('PrimaryCaps_layer'):
-            primaryCaps = CapsConv(num_units=8, with_routing=False)
-            caps1 = primaryCaps(conv1, num_outputs=32, kernel_size=9, stride=2)
+            primaryCaps = CapsLayer(num_outputs=32, vec_len=8, with_routing=False, layer_type='CONV')
+            caps1 = primaryCaps(conv1, kernel_size=9, stride=2)
             assert caps1.get_shape() == [cfg.batch_size, 1152, 8, 1]
 
-        # DigitCaps layer, [batch_size, 10, 16, 1]
+        # DigitCaps layer, return [batch_size, 10, 16, 1]
         with tf.variable_scope('DigitCaps_layer'):
-            digitCaps = CapsConv(num_units=16, with_routing=True)
-            self.caps2 = digitCaps(caps1, num_outputs=10)
+            digitCaps = CapsLayer(num_outputs=10, vec_len=16, with_routing=True, layer_type='FC')
+            self.caps2 = digitCaps(caps1)
 
         # Decoder structure in Fig. 2
         # 1. Do masking, how:
@@ -60,7 +57,7 @@ class CapsNet(object):
 
             # b). pick out the index of max softmax val of the 10 caps
             # [batch_size, 10, 1, 1] => [batch_size] (index)
-            argmax_idx = tf.argmax(self.softmax_v, axis=1, output_type=tf.int32)
+            argmax_idx = tf.to_int32(tf.argmax(self.softmax_v, axis=1))
             assert argmax_idx.get_shape() == [cfg.batch_size, 1, 1]
 
             # c). indexing
