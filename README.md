@@ -3,33 +3,23 @@
 [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=plastic)](CONTRIBUTING.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg?style=plastic)](https://opensource.org/licenses/Apache-2.0)
 ![completion](https://img.shields.io/badge/completion%20state-90%25-blue.svg?style=plastic)
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=plastic)](https://gitter.im/CapsNet-Tensorflow/Lobby)
 
 A Tensorflow implementation of CapsNet in Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
-> **States:**
-> 1. The code is runnable, but still some different from the paper, not a logical error, but misunstand the capsule, including The routing "for" loop, margin loss(issue #8, thanks for reminding, it's my carelessness)
-> 2. some results of the 'wrong' version has been pasted out, but not effective as the results in the paper,
+> **Status:**
+> 1. The code runs, issue #8 fixed.
+> 2. some results of the tag v0.1 version has been pasted out, but not effective as the results in the paper
 
 > **Daily task**
-> 1. Update the code of routing algorithm
-> 2. Adjust margin loss
-> 3. Improve the eval pipeline
+> 1. Adjust margin 
+> 2. Improve the eval pipeline, integrate it into training pipeline: all you need is ``git clone``, ``cd`` and ``python main.py``
 
 > **Others**
-> 1. [Here(知乎)](https://zhihu.com/question/67287444/answer/251460831) is my understanding of the section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code.
+> 1. [Here(知乎)](https://zhihu.com/question/67287444/answer/251460831) is my understanding of section 4 of the paper (the core part of CapsNet), it might be helpful for understanding the code.
 > 2. If you find out any problems, please let me know. I will try my best to 'kill' it as quickly as possible.
 
 In the day of waiting, be patient: Merry days will come, believe. ---- Alexander PuskinIf :blush:
-
-
-## Chat group:
-WeChat: ![wechat](imgs/wechat_group.png)
-Gitter: [![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=plastic)](https://gitter.im/CapsNet-Tensorflow/Lobby)
-my weChat: ![my_wechat](/imgs/my_wechat_QR.png)
-
-- We have a lot of interesting discussion in the WeChat group, welcome to join us. **But gitter & English first, please.** Anyway, we will release the discussion results in the name of this group(pointing out the contribution of any contributors)
-
-- If you find out that the Wechat group QR is invalid, add my personal account.
 
 
 ## Requirements
@@ -102,7 +92,7 @@ Results after fix Issues #8:
 > My simple comments for capsule
 > 1. A new version neural unit(vector in vector out, not scalar in scalar out)
 > 2. The routing algorithm is similar to attention mechanism
-> 3. Anyway, a work with great potential, we can do a lot of work on it
+> 3. Anyway, a great potential work, we can do a lot of work on it
 
 ------------
 ### TODO:
@@ -110,4 +100,10 @@ Results after fix Issues #8:
 - Do some different experiments for capsNet:
  * Using other datasets
  * Adjusting model structure
+ 
 - There is [another new paper](https://openreview.net/pdf?id=HJWLfGWRb) about capsules(submitted to ICLR 2018), follow-up.
+
+## My weChat:
+ ![my_wechat](/imgs/my_wechat_QR.png)
+
+- We have a WeChat group, welcome to join us.
