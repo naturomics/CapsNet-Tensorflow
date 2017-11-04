@@ -168,6 +168,8 @@ def fully_connected(inputs,
         num_outputs: ...
     Returns:
         ...
+    Raise:
+        ...
     '''
     layer = CapsLayer(num_outputs=num_outputs,
                       vec_len=vec_len,
@@ -187,6 +189,8 @@ def conv2d(inputs,
     Args:
         inputs: A tensor.
     Returns:
+        ...
+    Raises:
         ...
     '''
     layer = CapsLayer(num_outputs=filters,
