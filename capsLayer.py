@@ -149,3 +149,48 @@ def squash(vector):
     scalar_factor = vec_squared_norm / (1 + vec_squared_norm) / tf.sqrt(vec_squared_norm + epsilon)
     vec_squashed = scalar_factor * vector  # element-wise
     return(vec_squashed)
+
+
+# TODO: 1. Test the `fully_connected` and `conv2d` function;
+#       2. Update  doc about these tow function.
+def fully_connected(inputs,
+                    num_outputs,
+                    vec_len,
+                    with_routing=True,
+                    weights_initializers=tf.initializers.xavier_initializer(),
+                    reuse=None,
+                    variable_collections=None,
+                    scope=None):
+    '''A capsule fully connected layer.(Notes: not tested yet)
+    Args:
+        inputs: A tensor of as least rank 3, i.e. `[batch_size, num_inputs, vec_len]`,
+                `[batch_size, num_inputs, vec_len, 1]`.
+        num_outputs: ...
+    Returns:
+        ...
+    '''
+    layer = CapsLayer(num_outputs=num_outputs,
+                      vec_len=vec_len,
+                      with_routing=with_routing,
+                      layer_type='FC')
+    return layer.apply(inputs)
+
+
+def conv2d(inputs,
+           filters,
+           vec_len,
+           kernel_size,
+           strides=(1, 1),
+           with_routing=False,
+           reuse=None):
+    '''A capsule convolutional layer.(Notes: not tested yet)
+    Args:
+        inputs: A tensor.
+    Returns:
+        ...
+    '''
+    layer = CapsLayer(num_outputs=filters,
+                      vec_len=vec_len,
+                      with_routing=with_routing,
+                      layer_type='CONV')
+    return(layer(inputs, kernel_size=kernel_size, stride=strides))
