@@ -65,8 +65,8 @@ class CapsLayer(object):
                 self.input = tf.reshape(input, shape=(cfg.batch_size, -1, 1, input.shape[-2].value, 1))
 
                 with tf.variable_scope('routing'):
-                    # b_IJ: [1, 1, num_caps_l, num_caps_l_plus_1, 1]
-                    b_IJ = tf.constant(np.zeros([1, input.shape[1].value, self.num_outputs, 1, 1], dtype=np.float32))
+                    # b_IJ: [1, num_caps_l, num_caps_l_plus_1, 1 , 1]
+                    b_IJ = tf.constant(np.zeros([1, input.shape[1].value, self.num_outputs,1,1], dtype=np.float32))
                     capsules = routing(self.input, b_IJ)
                     capsules = tf.squeeze(capsules, axis=1)
 
@@ -114,7 +114,7 @@ def routing(input, b_IJ):
             assert c_IJ.get_shape() == [cfg.batch_size, 1152, 10, 1, 1]
 
             # line 5:
-            # weighting u_hat with c_IJ, element-wise in the last tow dim
+            # weighting u_hat with c_IJ, element-wise in the last two dim
             # => [batch_size, 1152, 10, 16, 1]
             s_J = tf.multiply(c_IJ, u_hat)
             # then sum in the second dim, resulting in [batch_size, 1, 10, 16, 1]
@@ -152,7 +152,7 @@ def squash(vector):
 
 
 # TODO: 1. Test the `fully_connected` and `conv2d` function;
-#       2. Update  doc about these tow function.
+#       2. Update  doc about these two function.
 def fully_connected(inputs,
                     num_outputs,
                     vec_len,
