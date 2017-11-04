@@ -108,8 +108,8 @@ def routing(input, b_IJ):
     for r_iter in range(cfg.iter_routing):
         with tf.variable_scope('iter_' + str(r_iter)):
             # line 4:
-            # => [1, 1, 1152, 10, 1]
-            c_IJ = tf.nn.softmax(b_IJ, dim=3)
+            # => [1, 1152, 10, 1, 1]
+            c_IJ = tf.nn.softmax(b_IJ, dim=2)
             c_IJ = tf.tile(c_IJ, [cfg.batch_size, 1, 1, 1, 1])
             assert c_IJ.get_shape() == [cfg.batch_size, 1152, 10, 1, 1]
 
