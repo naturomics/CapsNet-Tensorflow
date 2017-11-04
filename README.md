@@ -8,18 +8,17 @@
 A Tensorflow implementation of CapsNet based on Geoffrey Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
 > **Status:**
-> 1. The code runs, issue #8 fixed.
-> 2. some results of the tag v0.1 version has been pasted out, but not effective as the results in the paper
+> 1. The capsule of MNIST version is finished. Now we have two version:
+>    a) tag v0.1, not work well due to Issue #8
+>    b) and the current version
 
 > **Daily task**
-> 1. Adjust margin 
-> 2. Improve the eval pipeline, integrate it into training pipeline: all you need is ``git clone``, ``cd`` and ``python main.py``
+> 1. multi-GPU support
+> 2. Improving the reusability of ``capsLayer.py``, what you need is ``import capsLayer.fully_connected`` or ``import capsLayer.conv2d`` in your code
 
 > **Others**
 > 1. [Here(知乎)](https://zhihu.com/question/67287444/answer/251460831) is an answer explaining my understanding of Section 4 of the paper (the core part of CapsNet). It may be helpful in understanding the code.
 > 2. If you find out any problems, please let me know. I will try my best to 'kill' it ASAP.
-
-In the day of waiting, be patient: Merry days will come, believe. ---- Alexander PuskinIf :blush:
 
 
 ## Requirements
@@ -27,11 +26,9 @@ In the day of waiting, be patient: Merry days will come, believe. ---- Alexander
 - NumPy
 - [Tensorflow](https://github.com/tensorflow/tensorflow) (I'm using 1.3.0, not yet tested for older version)
 - tqdm (for displaying training progress info)
-- scipy (for saving image)
+- scipy (for saving images)
 
 ## Usage
-
-### Training
 **Step 1.** 
 Clone this repository with ``git``.
 
@@ -53,40 +50,22 @@ $ gunzip data/mnist/*.gz
 Start the training:
 ```
 $ pip install tqdm  # install it if you haven't installed yet
-$ python train.py
+$ python main.py
 ```
 
-the tqdm package is not necessary, just an optional tool for displaying the training progress. If you don't want it, change the loop ``for in step ...`` to ``for step in range(num_batch)`` in ``train.py``
-
-### Evaluation
-```
-$ python eval.py --is_training False
-```
-
+> The default parameters of batch size is 128, and epoch is 50. You may need to modify the ``config.py`` file or use command line parameters to suit your case. In my case, I run ``python main.py  --test_sum_freq=200 --batch_size=48`` for my 4G GPU(~10min/epoch)
 
 ## Results
-Results for the 'wrong' version(Details in Issues #8):
 
 - training loss
-![total_loss](imgs/total_loss.png)
 
-![margin_loss](imgs/margin_loss.png)
-![reconstruction_loss](imgs/reconstruction_loss.png)
+![total_loss](results/total_loss.png)
+![margin_loss](results/margin_loss.png)
+![reconstruction_loss](results/reconstruction_loss.png)
 
 - test acc
 
-|Epoch|49|51|
-|:----:|:----:|:--:|
-|test acc|94.69|94.71|
-
-![test_img1](results/test_000.png)
-![test_img2](results/test_015.png)
-![test_img3](results/test_030.png)
-![test_img4](results/test_045.png)
-![test_img5](results/test_075.png)
-
-------------
-Results after fixing Issues #8: 
+![test_acc](results/accuracy.png)
 
 
 > My simple comments for capsule
