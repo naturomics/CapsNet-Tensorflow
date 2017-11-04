@@ -4,6 +4,9 @@ import tensorflow as tf
 from config import cfg
 
 
+epsilon = 1e-9
+
+
 class CapsLayer(object):
     ''' Capsule layer.
     Args:
@@ -26,7 +29,7 @@ class CapsLayer(object):
 
     def __call__(self, input, kernel_size=None, stride=None):
         '''
-        The parameters 'kernel_size' and 'stride' will be used only when 'layer_type' equal 'CONV'
+        The parameters 'kernel_size' and 'stride' will be used while 'layer_type' equal 'CONV'
         '''
         if self.layer_type == 'CONV':
             self.kernel_size = kernel_size
@@ -59,11 +62,11 @@ class CapsLayer(object):
             if self.with_routing:
                 # the DigitCaps layer, a fully connected layer
                 # Reshape the input into [batch_size, 1152, 1, 8, 1]
-                self.input = tf.reshape(input, shape=(cfg.batch_size, 1152, 1, 8, 1))
+                self.input = tf.reshape(input, shape=(cfg.batch_size, -1, 1, input.shape[-2].value, 1))
 
                 with tf.variable_scope('routing'):
                     # b_IJ: [1, 1, num_caps_l, num_caps_l_plus_1, 1]
-                    b_IJ = tf.zeros(shape=[1, 1152, 10, 1, 1], dtype=np.float32)
+                    b_IJ = tf.constant(np.zeros([1, input.shape[1].value, self.num_outputs, 1, 1], dtype=np.float32))
                     capsules = routing(self.input, b_IJ)
                     capsules = tf.squeeze(capsules, axis=1)
 
@@ -143,6 +146,6 @@ def squash(vector):
         A 5-D tensor with the same shape as vector but squashed in 4rd and 5th dimensions.
     '''
     vec_squared_norm = tf.reduce_sum(tf.square(vector), -2, keep_dims=True)
-    scalar_factor = vec_squared_norm / (1 + vec_squared_norm) / tf.sqrt(vec_squared_norm)
+    scalar_factor = vec_squared_norm / (1 + vec_squared_norm) / tf.sqrt(vec_squared_norm + epsilon)
     vec_squashed = scalar_factor * vector  # element-wise
     return(vec_squashed)

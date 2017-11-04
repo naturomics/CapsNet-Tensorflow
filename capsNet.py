@@ -5,6 +5,9 @@ from utils import get_batch_data
 from capsLayer import CapsLayer
 
 
+epsilon = 1e-9
+
+
 class CapsNet(object):
     def __init__(self, is_training=True):
         self.graph = tf.Graph()
@@ -51,13 +54,13 @@ class CapsNet(object):
             # Method 1. masking with true label, default mode
             if cfg.mask_with_y:
                 self.masked_v = tf.matmul(tf.squeeze(self.caps2), tf.reshape(self.Y, (-1, 10, 1)), transpose_a=True)
-                self.v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2), axis=2, keep_dims=True))
+                self.v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2), axis=2, keep_dims=True) + epsilon)
             # Method 2. Seems not work
             else:
                 # a). calc ||v_c||, then do softmax(||v_c||)
                 # [batch_size, 10, 16, 1] => [batch_size, 10, 1, 1]
                 self.v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2),
-                                                      axis=2, keep_dims=True))
+                                                      axis=2, keep_dims=True) + epsilon)
                 self.softmax_v = tf.nn.softmax(self.v_length, dim=1)
                 assert self.softmax_v.get_shape() == [cfg.batch_size, 10, 1, 1]
 
