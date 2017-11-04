@@ -65,7 +65,7 @@ class CapsLayer(object):
                 self.input = tf.reshape(input, shape=(cfg.batch_size, -1, 1, input.shape[-2].value, 1))
 
                 with tf.variable_scope('routing'):
-                    # b_IJ: [1, 1, num_caps_l, num_caps_l_plus_1, 1]
+                    # b_IJ: [1, num_caps_l, num_caps_l_plus_1, 1, 1]
                     b_IJ = tf.constant(np.zeros([1, input.shape[1].value, self.num_outputs, 1, 1], dtype=np.float32))
                     capsules = routing(self.input, b_IJ)
                     capsules = tf.squeeze(capsules, axis=1)
@@ -108,13 +108,13 @@ def routing(input, b_IJ):
     for r_iter in range(cfg.iter_routing):
         with tf.variable_scope('iter_' + str(r_iter)):
             # line 4:
-            # => [1, 1, 1152, 10, 1]
-            c_IJ = tf.nn.softmax(b_IJ, dim=3)
+            # => [1, 1152, 10, 1, 1]
+            c_IJ = tf.nn.softmax(b_IJ, dim=2)
             c_IJ = tf.tile(c_IJ, [cfg.batch_size, 1, 1, 1, 1])
             assert c_IJ.get_shape() == [cfg.batch_size, 1152, 10, 1, 1]
 
             # line 5:
-            # weighting u_hat with c_IJ, element-wise in the last tow dim
+            # weighting u_hat with c_IJ, element-wise in the last two dims
             # => [batch_size, 1152, 10, 16, 1]
             s_J = tf.multiply(c_IJ, u_hat)
             # then sum in the second dim, resulting in [batch_size, 1, 10, 16, 1]
@@ -152,16 +152,16 @@ def squash(vector):
 
 
 # TODO: 1. Test the `fully_connected` and `conv2d` function;
-#       2. Update  doc about these tow function.
+#       2. Update  docs about these two function.
 def fully_connected(inputs,
                     num_outputs,
                     vec_len,
                     with_routing=True,
-                    weights_initializers=tf.initializers.xavier_initializer(),
+                    weights_initializers=tf.contrib.layers.xavier_initializer(),
                     reuse=None,
                     variable_collections=None,
                     scope=None):
-    '''A capsule fully connected layer.(Notes: not tested yet)
+    '''A capsule fully connected layer.(Note: not tested yet)
     Args:
         inputs: A tensor of as least rank 3, i.e. `[batch_size, num_inputs, vec_len]`,
                 `[batch_size, num_inputs, vec_len, 1]`.
@@ -185,7 +185,7 @@ def conv2d(inputs,
            strides=(1, 1),
            with_routing=False,
            reuse=None):
-    '''A capsule convolutional layer.(Notes: not tested yet)
+    '''A capsule convolutional layer.(Note: not tested yet)
     Args:
         inputs: A tensor.
     Returns:
