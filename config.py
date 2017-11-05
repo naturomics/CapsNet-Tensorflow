@@ -19,6 +19,7 @@ flags.DEFINE_integer('iter_routing', 3, 'number of iterations in routing algorit
 flags.DEFINE_boolean('mask_with_y', True, 'use the true label to mask out target capsule or not')
 
 flags.DEFINE_float('stddev', 0.01, 'stddev for W initializer')
+flags.DEFINE_float('regularization_scale', 0.392, 'regularization coefficient for reconstruction loss, default to 0.0005*784=0.392')
 
 
 ############################

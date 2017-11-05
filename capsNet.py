@@ -126,7 +126,11 @@ class CapsNet(object):
         self.reconstruction_err = tf.reduce_mean(squared)
 
         # 3. Total loss
-        self.total_loss = self.margin_loss + 0.0005 * self.reconstruction_err
+        # The paper uses sum of squared error as reconstruction error, but we
+        # have used reduce_mean in `# 2 The reconstruction loss` to calculate
+        # mean squared error. In order to keep in line with the paper,the
+        # regularization scale should be 0.0005*784=0.392
+        self.total_loss = self.margin_loss + cfg.regularization_scale * self.reconstruction_err
 
     # Summary
     def _summary(self):
