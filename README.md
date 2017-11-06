@@ -9,8 +9,8 @@ A Tensorflow implementation of CapsNet based on Geoffrey Hinton's paper [Dynamic
 
 > **Status:**
 > 1. The capsule of MNIST version is finished. Now we have two version:
->    a) tag v0.1, not work well due to Issue #8
->    b) and the current version
+>    a) tag v0.1, not work well due to Issue #8; 
+>    b) the current version, see the detailed results [here](#Results)
 
 > **Daily task**
 > 1. multi-GPU support
@@ -77,8 +77,8 @@ $ python main.py
 ### TODO:
 - Finish the MNIST version of capsNet (progress:90%)
 - Do some different experiments for capsNet:
- * Try Using other datasets
- * Adjusting the model structure
+  * Try Using other datasets
+  * Adjusting the model structure
  
 - There is [another new paper](https://openreview.net/pdf?id=HJWLfGWRb) about capsules(submitted to ICLR 2018), a follow-up of the CapsNet paper.
 
@@ -87,3 +87,7 @@ $ python main.py
  ![nb312_wechat](/imgs/nb312_wechat.png)
 
 - Our WeChat group is growing fast, and [@nb312](https://github.com/nb312) is helping me with the wechat request. The left one is my wechat QR, but if you just want to join our group, please contact [@nb312](https://github.com/nb312) by the QR in the right side.
+
+
+### Reference
+- [XifengGuo/CapsNet-Keras](https://github.com/XifengGuo/CapsNet-Keras): referred for code optimization
