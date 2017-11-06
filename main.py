@@ -46,8 +46,6 @@ def main(_):
                     test_acc = test_acc / (cfg.batch_size * num_test_batch)
                     fd_results.write(str(global_step + 1) + ',' + str(test_acc) + '\n')
                     fd_results.flush()
-                    summary_str = sess.run(capsNet.test_summary, {capsNet.test_acc: test_acc})
-                    sv.summary_writer.add_summary(summary_str, global_step)
 
             if epoch % cfg.save_freq == 0:
                 sv.saver.save(sess, cfg.logdir + '/model_epoch_%04d_step_%02d' % (epoch, global_step))

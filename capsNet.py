@@ -140,12 +140,8 @@ class CapsNet(object):
         train_summary.append(tf.summary.scalar('train/total_loss', self.total_loss))
         recon_img = tf.reshape(self.decoded, shape=(cfg.batch_size, 28, 28, 1))
         train_summary.append(tf.summary.image('reconstruction_img', recon_img))
+        self.train_summary = tf.summary.merge(train_summary)
 
         correct_prediction = tf.equal(tf.to_int32(self.labels), self.argmax_idx)
         self.batch_accuracy = tf.reduce_sum(tf.cast(correct_prediction, tf.float32))
         self.test_acc = tf.placeholder_with_default(tf.constant(0.), shape=[])
-        test_summary = []
-        test_summary.append(tf.summary.scalar('test/accuracy', self.test_acc))
-
-        self.train_summary = tf.summary.merge(train_summary)
-        self.test_summary = tf.summary.merge(test_summary)

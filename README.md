@@ -10,7 +10,7 @@ A Tensorflow implementation of CapsNet based on Geoffrey Hinton's paper [Dynamic
 > **Status:**
 > 1. The capsule of MNIST version is finished. Now we have two version:
 >    a) tag v0.1, not work well due to Issue #8; 
->    b) the current version, see the detailed results [here](#Results)
+>    b) the current version, see the detailed results [here](##Results)
 
 > **Daily task**
 > 1. multi-GPU support
