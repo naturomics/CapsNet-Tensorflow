@@ -7,6 +7,9 @@
 
 A Tensorflow implementation of CapsNet based on Geoffrey Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
+![capsVSneuron](imgs/capsuleVSneuron.png)
+![capsule_FC](imgs/capsule_FC.png)
+
 > **Status:**
 > 1. The capsule of MNIST version is finished. Now we have two version:
 >    a) tag v0.1, not work well due to Issue #8; 
