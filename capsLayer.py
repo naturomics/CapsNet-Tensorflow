@@ -40,6 +40,8 @@ class CapsLayer(object):
                 # input: [batch_size, 20, 20, 256]
                 assert input.get_shape() == [cfg.batch_size, 20, 20, 256]
 
+                '''
+                # version 1, computational expensive
                 capsules = []
                 for i in range(self.vec_len):
                     # each capsule i: [batch_size, 6, 6, 32]
@@ -49,11 +51,16 @@ class CapsLayer(object):
                                                           padding="VALID")
                         caps_i = tf.reshape(caps_i, shape=(cfg.batch_size, -1, 1, 1))
                         capsules.append(caps_i)
-
                 assert capsules[0].get_shape() == [cfg.batch_size, 1152, 1, 1]
+                capsules = tf.concat(capsules, axis=2)
+                '''
+
+                # version 2, equivalent to version 1
+                capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
+                                                    self.kernel_size, self.stride,padding="VALID")
+                capsules = tf.reshape(capsules, (cfg.batch_size, -1, self.vec_len, 1))
 
                 # [batch_size, 1152, 8, 1]
-                capsules = tf.concat(capsules, axis=2)
                 capsules = squash(capsules)
                 assert capsules.get_shape() == [cfg.batch_size, 1152, 8, 1]
                 return(capsules)
