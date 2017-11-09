@@ -48,16 +48,24 @@ class CapsLayer(object):
                     with tf.variable_scope('ConvUnit_' + str(i)):
                         caps_i = tf.contrib.layers.conv2d(input, self.num_outputs,
                                                           self.kernel_size, self.stride,
-                                                          padding="VALID")
+                                                          padding="VALID", activation_fn=None)
                         caps_i = tf.reshape(caps_i, shape=(cfg.batch_size, -1, 1, 1))
                         capsules.append(caps_i)
                 assert capsules[0].get_shape() == [cfg.batch_size, 1152, 1, 1]
                 capsules = tf.concat(capsules, axis=2)
                 '''
 
-                # version 2, equivalent to version 1
+                # version 2, equivalent to version 1 but higher computational
+                # efficiency.
+                # NOTE: I can't find out any words from the paper whether the
+                # PrimaryCap convolution does a ReLU activation before
+                # squashing function. So, which one to use will be your choice
+                # capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
+                #                                    self.kernel_size, self.stride,padding="VALID",
+                #                                    activation_fn=tf.nn.relu)
                 capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
-                                                    self.kernel_size, self.stride,padding="VALID")
+                                                    self.kernel_size, self.stride,padding="VALID",
+                                                    activation_fn=None)
                 capsules = tf.reshape(capsules, (cfg.batch_size, -1, self.vec_len, 1))
 
                 # [batch_size, 1152, 8, 1]
