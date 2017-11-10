@@ -8,7 +8,7 @@ A distributed implementation of CapsNet for training and inference. Some optimiz
 
 > **Daily task**
 > 1. Validation performance with multi-gpus
-> 2. Implement the test and inference pard
+> 2. Implement the test and inference part
 
 - Python
 - NumPy
