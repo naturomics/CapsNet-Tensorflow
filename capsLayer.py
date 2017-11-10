@@ -58,14 +58,15 @@ class CapsLayer(object):
                 # version 2, equivalent to version 1 but higher computational
                 # efficiency.
                 # NOTE: I can't find out any words from the paper whether the
-                # PrimaryCap convolution does a ReLU activation before
-                # squashing function. So, which one to use will be your choice
+                # PrimaryCap convolution does a ReLU activation or not before
+                # squashing function, but experiment show that using ReLU get a
+                # higher test accuracy. So, which one to use will be your choice
+                capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
+                                                    self.kernel_size, self.stride, padding="VALID",
+                                                    activation_fn=tf.nn.relu)
                 # capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
                 #                                    self.kernel_size, self.stride,padding="VALID",
-                #                                    activation_fn=tf.nn.relu)
-                capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
-                                                    self.kernel_size, self.stride,padding="VALID",
-                                                    activation_fn=None)
+                #                                    activation_fn=None)
                 capsules = tf.reshape(capsules, (cfg.batch_size, -1, self.vec_len, 1))
 
                 # [batch_size, 1152, 8, 1]
