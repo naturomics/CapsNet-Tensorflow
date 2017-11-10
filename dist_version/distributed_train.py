@@ -129,8 +129,7 @@ def main(_):
         for step in range(cfg.epoch*num_batches_per_epoch):
             tic = time.time()
             _, loss_value = sess.run([train_op, loss])
-            print(time.time()-tic)
-            print(step)
+            print(str(time.time()-tic)+' '+str(step))
 
             assert not np.isnan(loss_value)
 

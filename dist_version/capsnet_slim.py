@@ -50,8 +50,7 @@ def build_arch(input, y, is_train=False):
                         v_j = s_j_norm_square*s_j/((1+s_j_norm_square)*tf.sqrt(s_j_norm_square+1e-9))
                         assert v_j.get_shape() == [cfg.batch_size_per_gpu, 16]
 
-                        tmp = tf.reduce_sum(tf.matmul(tf.reshape(input_groups[i], [cfg.batch_size_per_gpu, 1152, 16]), tf.reshape(v_j, [cfg.batch_size, 16, 1])), axis=0)
-                        b_ij_groups[i] = b_ij_groups[i]+tmp
+                        b_ij_groups[i] = b_ij_groups[i]+tf.reduce_sum(tf.matmul(tf.reshape(input_groups[i], [cfg.batch_size_per_gpu, 1152, 16]), tf.reshape(v_j, [cfg.batch_size, 16, 1])), axis=0)
 
                         if r_iter == cfg.iter_routing-1:
                             v_js.append(tf.reshape(v_j, [cfg.batch_size_per_gpu, 1, 16]))
