@@ -8,12 +8,11 @@
 A Tensorflow implementation of CapsNet based on Geoffrey Hinton's paper [Dynamic Routing Between Capsules](https://arxiv.org/abs/1710.09829)
 
 ![capsVSneuron](imgs/capsuleVSneuron.png)
-![capsule_FC](imgs/capsule_FC.png)
 
 > **Status:**
 > 1. The capsule of MNIST version is finished. Now we have two version:
 >    a) tag v0.1, not work well due to Issue #8; 
->    b) the current version, see details in Results section
+>    b) the current version with `test accuracy 99.57`, see details in the `Results` section
 
 > **Daily task**
 > 1. multi-GPU support
@@ -66,7 +65,7 @@ $ python main.py
 ![margin_loss](results/margin_loss.png)
 ![reconstruction_loss](results/reconstruction_loss.png)
 
-- test acc
+- test accuracy(the best result is 99.57%)
 
 ![test_acc](results/accuracy.png)
 
@@ -87,10 +86,6 @@ $ python main.py
 
 ## My weChat:
  ![my_wechat](/imgs/my_wechat_QR.png)
- ![nb312_wechat](/imgs/nb312_wechat.png)
-
-- Our WeChat group is growing fast, and [@nb312](https://github.com/nb312) is helping me with the wechat request. The left one is my wechat QR, but if you just want to join our group, please contact [@nb312](https://github.com/nb312) by the QR in the right side.
-
 
 ### Reference
 - [XifengGuo/CapsNet-Keras](https://github.com/XifengGuo/CapsNet-Keras): referred for code optimization
