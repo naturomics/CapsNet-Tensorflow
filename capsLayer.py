@@ -161,11 +161,11 @@ def routing(input, b_IJ):
 def squash(vector):
     '''Squashing function corresponding to Eq. 1
     Args:
-        vector: A 5-D tensor with shape [batch_size, 1, num_caps, vec_len, 1],
+        vector: A tensor with shape [batch_size, 1, num_caps, vec_len, 1] or [batch_size, num_caps, vec_len, 1].
     Returns:
-        A 5-D tensor with the same shape as vector but squashed in 4rd and 5th dimensions.
+        A tensor with the same shape as vector but squashed in 'vec_len' dimension.
     '''
-    vec_squared_norm = tf.reduce_sum(tf.square(vector), -2, keep_dims=True)
+    vec_squared_norm = tf.reduce_sum(tf.square(vector), -2, keep_dims=Truek
     scalar_factor = vec_squared_norm / (1 + vec_squared_norm) / tf.sqrt(vec_squared_norm + epsilon)
     vec_squashed = scalar_factor * vector  # element-wise
     return(vec_squashed)
