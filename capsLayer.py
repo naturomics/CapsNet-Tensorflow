@@ -1,3 +1,9 @@
+"""
+License: Apache-2.0
+Author: Huadong Liao
+E-mail: naturomics.liao@gmail.com
+"""
+
 import numpy as np
 import tensorflow as tf
 
@@ -165,7 +171,7 @@ def squash(vector):
     Returns:
         A tensor with the same shape as vector but squashed in 'vec_len' dimension.
     '''
-    vec_squared_norm = tf.reduce_sum(tf.square(vector), -2, keep_dims=Truek
+    vec_squared_norm = tf.reduce_sum(tf.square(vector), -2, keep_dims=True)
     scalar_factor = vec_squared_norm / (1 + vec_squared_norm) / tf.sqrt(vec_squared_norm + epsilon)
     vec_squashed = scalar_factor * vector  # element-wise
     return(vec_squashed)

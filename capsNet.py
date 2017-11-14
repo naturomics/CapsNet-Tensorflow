@@ -1,3 +1,9 @@
+"""
+License: Apache-2.0
+Author: Huadong Liao
+E-mail: naturomics.liao@gmail.com
+"""
+
 import tensorflow as tf
 
 from config import cfg
