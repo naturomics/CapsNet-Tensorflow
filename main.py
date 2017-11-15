@@ -22,7 +22,9 @@ def main(_):
 
     fd_results = open(path, 'w')
     fd_results.write('step,test_acc\n')
-    with sv.managed_session() as sess:
+    config = tf.ConfigProto()
+    config.gpu_options.allow_growth = True
+    with sv.managed_session(config=config) as sess:
         num_batch = int(60000 / cfg.batch_size)
         num_test_batch = 10000 // cfg.batch_size
         teX, teY = load_mnist(cfg.dataset, False)
