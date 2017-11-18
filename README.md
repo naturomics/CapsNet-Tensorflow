@@ -10,16 +10,14 @@ A Tensorflow implementation of CapsNet based on Geoffrey Hinton's paper [Dynamic
 ![capsVSneuron](imgs/capsuleVSneuron.png)
 
 > **Status:**
-> 1. The capsule of MNIST version is finished. Now we have two version:
->    a) tag v0.1, not work well due to Issue #8; 
->    b) the current version with `test accuracy 99.57`, see details in the `Results` section
+> 1. The capsule of MNIST version is finished. The current `test accuracy =  99.57`, see details in the `Results` section
 
 > **Daily task**
 > 1. multi-GPU support
 > 2. Improving the reusability of ``capsLayer.py``, what you need is ``import capsLayer.fully_connected`` or ``import capsLayer.conv2d`` in your code
 
 > **Others**
-> 1. [Here(知乎)](https://zhihu.com/question/67287444/answer/251460831) is an answer explaining my understanding of Section 4 of the paper (the core part of CapsNet). It may be helpful in understanding the code.
+> 1. [Here(知乎)](https://zhihu.com/question/67287444/answer/251460831) is an answer explaining my understanding of the paper. It may be helpful in understanding the code.
 > 2. If you find out any problems, please let me know. I will try my best to 'kill' it ASAP.
 
 
@@ -65,9 +63,14 @@ $ python main.py
 ![margin_loss](results/margin_loss.png)
 ![reconstruction_loss](results/reconstruction_loss.png)
 
-- test accuracy(the best result is 99.57%)
+- test accuracy(using reconstruction)
 
-![test_acc](results/accuracy.png)
+Routing iteration | 1 | 2 | 3 |
+:-----|:----:|:----:|:------|
+Test accuracy | 0.43 | 0.44 | 0.49 |
+*Paper* | 0.29 | - | 0.25 |
+
+![test_acc](results/routing_trails.png)
 
 
 > My simple comments for capsule
