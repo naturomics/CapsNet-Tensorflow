@@ -160,7 +160,7 @@ def routing(input, b_IJ):
                 v_J = squash(s_J)
 
                 # line 7:
-                # reshape & tile v_j from [batch_size ,1, 10, 16, 1] to [batch_size, 10, 1152, 16, 1]
+                # reshape & tile v_j from [batch_size ,1, 10, 16, 1] to [batch_size, 1152, 10, 16, 1]
                 # then matmul in the last tow dim: [16, 1].T x [16, 1] => [1, 1], reduce mean in the
                 # batch_size dim, resulting in [1, 1152, 10, 1, 1]
                 v_J_tiled = tf.tile(v_J, [1, 1152, 1, 1, 1])
