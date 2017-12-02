@@ -25,12 +25,12 @@ flags.DEFINE_float('regularization_scale', 0.392, 'regularization coefficient fo
 ############################
 #   environment setting    #
 ############################
-flags.DEFINE_string('dataset', 'data/mnist', 'the path for dataset')
+flags.DEFINE_string('dataset', 'mnist', 'The name of dataset [mnist, fashion-mnist')
 flags.DEFINE_boolean('is_training', True, 'train or predict phase')
 flags.DEFINE_integer('num_threads', 8, 'number of threads of enqueueing exampls')
 flags.DEFINE_string('logdir', 'logdir', 'logs directory')
-flags.DEFINE_integer('train_sum_freq', 50, 'the frequency of saving train summary(step)')
-flags.DEFINE_integer('test_sum_freq', 500, 'the frequency of saving test summary(step)')
+flags.DEFINE_integer('train_sum_freq', 100, 'the frequency of saving train summary(step)')
+flags.DEFINE_integer('val_sum_freq', 500, 'the frequency of saving valuation summary(step)')
 flags.DEFINE_integer('save_freq', 3, 'the frequency of saving model(epoch)')
 flags.DEFINE_string('results', 'results', 'path for saving results')
 
