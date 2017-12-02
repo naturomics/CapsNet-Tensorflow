@@ -19,7 +19,7 @@ class CapsNet(object):
         self.graph = tf.Graph()
         with self.graph.as_default():
             if is_training:
-                self.X, self.labels = get_batch_data()
+                self.X, self.labels = get_batch_data(cfg.dataset, cfg.batch_size, cfg.num_threads)
                 self.Y = tf.one_hot(self.labels, depth=10, axis=1, dtype=tf.float32)
 
                 self.build_arch()
@@ -30,14 +30,10 @@ class CapsNet(object):
                 self.global_step = tf.Variable(0, name='global_step', trainable=False)
                 self.optimizer = tf.train.AdamOptimizer()
                 self.train_op = self.optimizer.minimize(self.total_loss, global_step=self.global_step)  # var_list=t_vars)
-            elif cfg.mask_with_y:
-                self.X = tf.placeholder(tf.float32,
-                                        shape=(cfg.batch_size, 28, 28, 1))
-                self.Y = tf.placeholder(tf.float32, shape=(cfg.batch_size, 10, 1))
-                self.build_arch()
             else:
-                self.X = tf.placeholder(tf.float32,
-                                        shape=(cfg.batch_size, 28, 28, 1))
+                self.X = tf.placeholder(tf.float32, shape=(cfg.batch_size, 28, 28, 1))
+                self.labels = tf.placeholder(tf.int32, shape=(cfg.batch_size, ))
+                self.Y = tf.reshape(self.labels, shape=(cfg.batch_size, 10, 1))
                 self.build_arch()
 
         tf.logging.info('Seting up the main structure')
@@ -150,5 +146,4 @@ class CapsNet(object):
         self.train_summary = tf.summary.merge(train_summary)
 
         correct_prediction = tf.equal(tf.to_int32(self.labels), self.argmax_idx)
-        self.batch_accuracy = tf.reduce_sum(tf.cast(correct_prediction, tf.float32))
-        self.test_acc = tf.placeholder_with_default(tf.constant(0.), shape=[])
+        self.accuracy = tf.reduce_sum(tf.cast(correct_prediction, tf.float32))
