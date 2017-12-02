@@ -52,6 +52,8 @@ def download_and_uncompress_zip(URL, dataset_dir, force=False):
 
 
 def start_download(dataset, save_to, force):
+    if not os.path.exists(save_to):
+        os.mkdir(save_to)
     if dataset == 'mnist':
         download_and_uncompress_zip(MNIST_TRAIN_IMGS_URL, save_to, force)
         download_and_uncompress_zip(MNIST_TRAIN_LABELS_URL, save_to, force)
