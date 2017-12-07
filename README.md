@@ -9,7 +9,7 @@ A Tensorflow implementation of CapsNet based on Geoffrey Hinton's paper [Dynamic
 ![capsVSneuron](imgs/capsuleVSneuron.png)
 
 > **Notes:**
-> 1. The current version supports the [MNIST](http://yann.lecun.com/exdb/mnist/) and [Fashion-MNIST](https://github.com/zalandoresearch/fashion-mnist) datasets. The current test accuracy for MNIST is `99.57%`, and Fashion-MNIST `90.60%`, see details in the `Results` section
+> 1. The current version supports the [MNIST](http://yann.lecun.com/exdb/mnist/) and [Fashion-MNIST](https://github.com/zalandoresearch/fashion-mnist) datasets. The current test accuracy for MNIST is `99.64%`, and Fashion-MNIST `90.60%`, see details in the `Results` section
 > 2. See [dist_version](dist_version) for multi-GPU support
 > 3. [Here(知乎)](https://zhihu.com/question/67287444/answer/251460831) is an article explaining my understanding of the paper. It may be helpful in understanding the code.
 
@@ -83,7 +83,7 @@ $ python main.py --dataset fashion-mnist --is_training=False
 
 Routing iteration | 1 | 2 | 3 |
 :-----|:----:|:----:|:------|
-Test accuracy | 0.43 | 0.44 | 0.49 |
+Test accuracy | 0.36 | 0.44 | 0.36 |
 *Paper* | 0.29 | - | 0.25 |
 
 ![test_acc](results/routing_trials.png)
