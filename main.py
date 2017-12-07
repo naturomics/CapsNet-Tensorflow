@@ -119,7 +119,7 @@ def main(_):
     sv = tf.train.Supervisor(graph=model.graph, logdir=cfg.logdir, save_model_secs=0)
 
     if cfg.is_training:
-        tf.logging.info(' Start trainging...')
+        tf.logging.info(' Start training...')
         train(model, sv, num_label)
         tf.logging.info('Training done')
     else:
