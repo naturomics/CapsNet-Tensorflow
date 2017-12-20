@@ -137,7 +137,7 @@ def routing(input, b_IJ):
     for r_iter in range(cfg.iter_routing):
         with tf.variable_scope('iter_' + str(r_iter)):
             # line 4:
-            # => [1, 1152, 10, 1, 1]
+            # => [batch_size, 1152, 10, 1, 1]
             c_IJ = tf.nn.softmax(b_IJ, dim=2)
 
             # At last iteration, use `u_hat` in order to receive gradients from the following graph
@@ -184,52 +184,3 @@ def squash(vector):
     scalar_factor = vec_squared_norm / (1 + vec_squared_norm) / tf.sqrt(vec_squared_norm + epsilon)
     vec_squashed = scalar_factor * vector  # element-wise
     return(vec_squashed)
-
-
-# TODO: 1. Test the `fully_connected` and `conv2d` function;
-#       2. Update  docs about these two function.
-def fully_connected(inputs,
-                    num_outputs,
-                    vec_len,
-                    with_routing=True,
-                    weights_initializers=tf.contrib.layers.xavier_initializer(),
-                    reuse=None,
-                    variable_collections=None,
-                    scope=None):
-    '''A capsule fully connected layer.(Note: not tested yet)
-    Args:
-        inputs: A tensor of as least rank 3, i.e. `[batch_size, num_inputs, vec_len]`,
-                `[batch_size, num_inputs, vec_len, 1]`.
-        num_outputs: ...
-    Returns:
-        ...
-    Raise:
-        ...
-    '''
-    layer = CapsLayer(num_outputs=num_outputs,
-                      vec_len=vec_len,
-                      with_routing=with_routing,
-                      layer_type='FC')
-    return layer.apply(inputs)
-
-
-def conv2d(inputs,
-           filters,
-           vec_len,
-           kernel_size,
-           strides=(1, 1),
-           with_routing=False,
-           reuse=None):
-    '''A capsule convolutional layer.(Note: not tested yet)
-    Args:
-        inputs: A tensor.
-    Returns:
-        ...
-    Raises:
-        ...
-    '''
-    layer = CapsLayer(num_outputs=filters,
-                      vec_len=vec_len,
-                      with_routing=with_routing,
-                      layer_type='CONV')
-    return(layer(inputs, kernel_size=kernel_size, stride=strides))
