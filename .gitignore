@@ -2,3 +2,5 @@
 data*
 .ropeproject
 logdir*
+
+*.swp
