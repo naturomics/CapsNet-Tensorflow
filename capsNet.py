@@ -19,7 +19,9 @@ class CapsNet(object):
         self.graph = tf.Graph()
         with self.graph.as_default():
             if is_training:
-                self.X, self.labels = get_batch_data(cfg.dataset, cfg.batch_size, cfg.num_threads)
+                self.X, self.labels = get_batch_data(
+                        cfg.dataset, cfg.batch_size, cfg.num_threads
+                        )
                 self.Y = tf.one_hot(self.labels, depth=10, axis=1, dtype=tf.float32)
 
                 self.build_arch()
@@ -48,13 +50,15 @@ class CapsNet(object):
 
         # Primary Capsules layer, return [batch_size, 1152, 8, 1]
         with tf.variable_scope('PrimaryCaps_layer'):
-            primaryCaps = CapsLayer(num_outputs=32, vec_len=8, with_routing=False, layer_type='CONV')
+            primaryCaps = CapsLayer(num_outputs=32, vec_len=8,
+                                    with_routing=False, layer_type='CONV')
             caps1 = primaryCaps(conv1, kernel_size=9, stride=2)
             assert caps1.get_shape() == [cfg.batch_size, 1152, 8, 1]
 
         # DigitCaps layer, return [batch_size, 10, 16, 1]
         with tf.variable_scope('DigitCaps_layer'):
-            digitCaps = CapsLayer(num_outputs=10, vec_len=16, with_routing=True, layer_type='FC')
+            digitCaps = CapsLayer(num_outputs=10, vec_len=16,
+                                  with_routing=True, layer_type='FC')
             self.caps2 = digitCaps(caps1)
 
         # Decoder structure in Fig. 2

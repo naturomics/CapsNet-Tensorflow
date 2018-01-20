@@ -70,6 +70,8 @@ class CapsLayer(object):
                 capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
                                                     self.kernel_size, self.stride, padding="VALID",
                                                     activation_fn=tf.nn.relu)
+                # at this point capsules.get_shape() == [128, 6, 6, 256]
+                assert capsules.get_shape() == [cfg.batch_size, 6, 6, 256]
                 # capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
                 #                                    self.kernel_size, self.stride,padding="VALID",
                 #                                    activation_fn=None)
@@ -89,7 +91,10 @@ class CapsLayer(object):
                 with tf.variable_scope('routing'):
                     # b_IJ: [batch_size, num_caps_l, num_caps_l_plus_1, 1, 1],
                     # about the reason of using 'batch_size', see issue #21
-                    b_IJ = tf.constant(np.zeros([cfg.batch_size, input.shape[1].value, self.num_outputs, 1, 1], dtype=np.float32))
+                    b_IJ = tf.constant(np.zeros(
+                        [cfg.batch_size, input.shape[1].value, self.num_outputs, 1, 1],
+                        dtype=np.float32)
+                        )
                     capsules = routing(self.input, b_IJ)
                     capsules = tf.squeeze(capsules, axis=1)
 
