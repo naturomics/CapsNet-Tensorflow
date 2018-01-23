@@ -77,6 +77,8 @@ class CapsLayer(object):
                 #                                    activation_fn=None)
                 capsules = tf.reshape(capsules, (cfg.batch_size, -1, self.vec_len, 1))
 
+                tf.summary.histogram('no_squash', capsules)
+
                 # [batch_size, 1152, 8, 1]
                 capsules = squash(capsules)
                 assert capsules.get_shape() == [cfg.batch_size, 1152, 8, 1]
@@ -155,6 +157,8 @@ def routing(input, b_IJ):
                 s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True)
                 assert s_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
 
+                tf.summary.histogram('no_squash', s_J)
+
                 # line 6:
                 # squash using Eq.1,
                 v_J = squash(s_J)
@@ -162,6 +166,9 @@ def routing(input, b_IJ):
             elif r_iter < cfg.iter_routing - 1:  # Inner iterations, do not apply backpropagation
                 s_J = tf.multiply(c_IJ, u_hat_stopped)
                 s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True)
+
+                tf.summary.histogram('no_squash', s_J)
+
                 v_J = squash(s_J)
 
                 # line 7:

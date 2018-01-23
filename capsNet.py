@@ -43,23 +43,23 @@ class CapsNet(object):
     def build_arch(self):
         with tf.variable_scope('Conv1_layer'):
             # Conv1, [batch_size, 20, 20, 256]
-            conv1 = tf.contrib.layers.conv2d(self.X, num_outputs=256,
+            self.conv1 = tf.contrib.layers.conv2d(self.X, num_outputs=256,
                                              kernel_size=9, stride=1,
                                              padding='VALID')
-            assert conv1.get_shape() == [cfg.batch_size, 20, 20, 256]
+            assert self.conv1.get_shape() == [cfg.batch_size, 20, 20, 256]
 
         # Primary Capsules layer, return [batch_size, 1152, 8, 1]
         with tf.variable_scope('PrimaryCaps_layer'):
             primaryCaps = CapsLayer(num_outputs=32, vec_len=8,
                                     with_routing=False, layer_type='CONV')
-            caps1 = primaryCaps(conv1, kernel_size=9, stride=2)
-            assert caps1.get_shape() == [cfg.batch_size, 1152, 8, 1]
+            self.caps1 = primaryCaps(self.conv1, kernel_size=9, stride=2)
+            assert self.caps1.get_shape() == [cfg.batch_size, 1152, 8, 1]
 
         # DigitCaps layer, return [batch_size, 10, 16, 1]
         with tf.variable_scope('DigitCaps_layer'):
             digitCaps = CapsLayer(num_outputs=10, vec_len=16,
                                   with_routing=True, layer_type='FC')
-            self.caps2 = digitCaps(caps1)
+            self.caps2 = digitCaps(self.caps1)
 
         # Decoder structure in Fig. 2
         # 1. Do masking, how:
@@ -141,13 +141,18 @@ class CapsNet(object):
 
     # Summary
     def _summary(self):
-        train_summary = []
-        train_summary.append(tf.summary.scalar('train/margin_loss', self.margin_loss))
-        train_summary.append(tf.summary.scalar('train/reconstruction_loss', self.reconstruction_err))
-        train_summary.append(tf.summary.scalar('train/total_loss', self.total_loss))
-        recon_img = tf.reshape(self.decoded, shape=(cfg.batch_size, 28, 28, 1))
-        train_summary.append(tf.summary.image('reconstruction_img', recon_img))
-        self.train_summary = tf.summary.merge(train_summary)
+        tf.summary.scalar('train/margin_loss', self.margin_loss)
+        tf.summary.scalar('train/reconstruction_loss', self.reconstruction_err)
+        tf.summary.scalar('train/total_loss', self.total_loss)
 
+        # Capsule histograms
+        tf.summary.histogram('train/conv1', self.conv1)
+        tf.summary.histogram('train/caps1', self.caps1)
+        tf.summary.histogram('train/caps2', self.caps2)
+
+        recon_img = tf.reshape(self.decoded, shape=(cfg.batch_size, 28, 28, 1))
+        tf.summary.image('reconstruction_img', recon_img)
+
+        self.train_summary = tf.summary.merge_all()
         correct_prediction = tf.equal(tf.to_int32(self.labels), self.argmax_idx)
         self.accuracy = tf.reduce_sum(tf.cast(correct_prediction, tf.float32))
