@@ -127,6 +127,7 @@ def routing(input, b_IJ):
     # W => [batch_size, 1152, 10, 8, 16]
     input = tf.tile(input, [1, 1, 10, 1, 1])
     W = tf.tile(W, [cfg.batch_size, 1, 1, 1, 1])
+    tf.summary.histogram('W', W)
     assert input.get_shape() == [cfg.batch_size, 1152, 10, 8, 1]
 
     # in last 2 dims:
@@ -135,6 +136,7 @@ def routing(input, b_IJ):
     # u_hat = tf.scan(lambda ac, x: tf.matmul(W, x, transpose_a=True), input, initializer=tf.zeros([1152, 10, 16, 1]))
     # tf.tile, 3 iter, 1080ti, 128 batch size: 6min/epoch
     u_hat = tf.matmul(W, input, transpose_a=True)
+    tf.summary.histogram('u_hat', u_hat)
     assert u_hat.get_shape() == [cfg.batch_size, 1152, 10, 16, 1]
 
     # In forward, u_hat_stopped = u_hat; in backward, no gradient passed back from u_hat_stopped to u_hat
@@ -146,6 +148,7 @@ def routing(input, b_IJ):
             # line 4:
             # => [batch_size, 1152, 10, 1, 1]
             c_IJ = tf.nn.softmax(b_IJ, dim=2)
+            tf.summary.histogram('c_IJ', c_IJ)
 
             # At last iteration, use `u_hat` in order to receive gradients from the following graph
             if r_iter == cfg.iter_routing - 1:
@@ -182,6 +185,7 @@ def routing(input, b_IJ):
                 # b_IJ += tf.reduce_sum(u_produce_v, axis=0, keep_dims=True)
                 b_IJ += u_produce_v
 
+    tf.summary.histogram('v_J', v_J)
     return(v_J)
 
 
