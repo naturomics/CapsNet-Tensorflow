@@ -6,6 +6,7 @@ E-mail: naturomics.liao@gmail.com
 
 import tensorflow as tf
 
+from libs import conv_layer
 from config import cfg
 from utils import get_batch_data
 from capsLayer import CapsLayer
@@ -43,11 +44,12 @@ class CapsNet(object):
     def build_arch(self):
         with tf.variable_scope('Conv1_layer'):
             # Conv1, [batch_size, 20, 20, 256]
-            conv1 = tf.contrib.layers.conv2d(self.X, num_outputs=256,
-                                             kernel_size=9, stride=1,
-                                             padding='VALID')
+            # conv1 = tf.contrib.layers.conv2d(self.X, num_outputs=256,
+            #                                  kernel_size=9, stride=1,
+            #                                  padding='VALID')
+            conv1 = conv_layer(self.X, in_channels=self.X.shape[-1].value,
+                        num_outputs=256, kernel_size=9, stride=1, padding='VALID')
             assert conv1.get_shape() == [cfg.batch_size, 20, 20, 256]
-            tf.summary.histogram('conv1', conv1)
 
         # Primary Capsules layer, return [batch_size, 1152, 8, 1]
         with tf.variable_scope('PrimaryCaps_layer'):

@@ -7,6 +7,7 @@ E-mail: naturomics.liao@gmail.com
 import numpy as np
 import tensorflow as tf
 
+from libs import conv_layer
 from config import cfg
 
 
@@ -67,9 +68,15 @@ class CapsLayer(object):
                 # PrimaryCap convolution does a ReLU activation or not before
                 # squashing function, but experiment show that using ReLU get a
                 # higher test accuracy. So, which one to use will be your choice
-                capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
-                                                    self.kernel_size, self.stride, padding="VALID",
-                                                    activation_fn=tf.nn.relu)
+                # capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
+                #                                     self.kernel_size, self.stride, padding="VALID",
+                #                                     activation_fn=tf.nn.relu)
+                capsules = conv_layer(input,
+                                      input.shape[-1].value,
+                                      self.num_outputs * self.vec_len,
+                                      self.kernel_size,
+                                      self.stride,
+                                      padding="VALID")
                 # at this point capsules.get_shape() == [128, 6, 6, 256]
                 assert capsules.get_shape() == [cfg.batch_size, 6, 6, 256]
                 # capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
