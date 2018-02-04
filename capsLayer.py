@@ -113,6 +113,7 @@ def routing(input, b_IJ):
     # W: [num_caps_i, num_caps_j, len_u_i, len_v_j]
     W = tf.get_variable('Weight', shape=(1, 1152, 10, 8, 16), dtype=tf.float32,
                         initializer=tf.random_normal_initializer(stddev=cfg.stddev))
+    biases = tf.get_variable('bias', shape=(1, 1, 10, 16, 1))
 
     # Eq.2, calc u_hat
     # do tiling for input and W before matmul
@@ -147,7 +148,7 @@ def routing(input, b_IJ):
                 # => [batch_size, 1152, 10, 16, 1]
                 s_J = tf.multiply(c_IJ, u_hat)
                 # then sum in the second dim, resulting in [batch_size, 1, 10, 16, 1]
-                s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True)
+                s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True) + biases
                 assert s_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
 
                 # line 6:
@@ -156,7 +157,7 @@ def routing(input, b_IJ):
                 assert v_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
             elif r_iter < cfg.iter_routing - 1:  # Inner iterations, do not apply backpropagation
                 s_J = tf.multiply(c_IJ, u_hat_stopped)
-                s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True)
+                s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True) + biases
                 v_J = squash(s_J)
 
                 # line 7:

@@ -50,7 +50,7 @@ def train(model, supervisor, num_label):
     with supervisor.managed_session(config=config) as sess:
         print("\nNote: all of results will be saved to directory: " + cfg.results)
         for epoch in range(cfg.epoch):
-            print('Training for epoch ' + str(epoch) + '/' + str(cfg.epoch) + ':')
+            print("Training for epoch %d/%d:" % (epoch, cfg.epoch))
             if supervisor.should_stop():
                 print('supervisor stoped!')
                 break
