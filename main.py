@@ -106,7 +106,7 @@ def evaluation(model, supervisor, num_label):
         test_acc = test_acc / (cfg.batch_size * num_te_batch)
         fd_test_acc.write(str(test_acc))
         fd_test_acc.close()
-        print('Test accuracy has been saved to ' + cfg.results + '/test_accuracy.txt')
+        print('Test accuracy has been saved to ' + cfg.results + '/test_acc.csv')
 
 
 def main(_):
