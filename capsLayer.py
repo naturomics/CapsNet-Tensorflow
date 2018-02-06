@@ -7,6 +7,7 @@ E-mail: naturomics.liao@gmail.com
 import numpy as np
 import tensorflow as tf
 
+from libs import conv_layer
 from config import cfg
 
 
@@ -67,15 +68,23 @@ class CapsLayer(object):
                 # PrimaryCap convolution does a ReLU activation or not before
                 # squashing function, but experiment show that using ReLU get a
                 # higher test accuracy. So, which one to use will be your choice
-                capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
-                                                    self.kernel_size, self.stride, padding="VALID",
-                                                    activation_fn=tf.nn.relu)
+                # capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
+                #                                     self.kernel_size, self.stride, padding="VALID",
+                #                                     activation_fn=tf.nn.relu)
+                capsules = conv_layer(input,
+                                      input.shape[-1].value,
+                                      self.num_outputs * self.vec_len,
+                                      self.kernel_size,
+                                      self.stride,
+                                      padding="VALID")
                 # at this point capsules.get_shape() == [128, 6, 6, 256]
                 assert capsules.get_shape() == [cfg.batch_size, 6, 6, 256]
                 # capsules = tf.contrib.layers.conv2d(input, self.num_outputs * self.vec_len,
                 #                                    self.kernel_size, self.stride,padding="VALID",
                 #                                    activation_fn=None)
                 capsules = tf.reshape(capsules, (cfg.batch_size, -1, self.vec_len, 1))
+
+                tf.summary.histogram('capsules', capsules)
 
                 # [batch_size, 1152, 8, 1]
                 capsules = squash(capsules)
@@ -125,6 +134,7 @@ def routing(input, b_IJ):
     # W => [batch_size, 1152, 10, 8, 16]
     input = tf.tile(input, [1, 1, 10, 1, 1])
     W = tf.tile(W, [cfg.batch_size, 1, 1, 1, 1])
+    tf.summary.histogram('W', W)
     assert input.get_shape() == [cfg.batch_size, 1152, 10, 8, 1]
 
     # in last 2 dims:
@@ -133,6 +143,7 @@ def routing(input, b_IJ):
     # u_hat = tf.scan(lambda ac, x: tf.matmul(W, x, transpose_a=True), input, initializer=tf.zeros([1152, 10, 16, 1]))
     # tf.tile, 3 iter, 1080ti, 128 batch size: 6min/epoch
     u_hat = tf.matmul(W, input, transpose_a=True)
+    tf.summary.histogram('u_hat', u_hat)
     assert u_hat.get_shape() == [cfg.batch_size, 1152, 10, 16, 1]
 
     # In forward, u_hat_stopped = u_hat; in backward, no gradient passed back from u_hat_stopped to u_hat
@@ -144,6 +155,7 @@ def routing(input, b_IJ):
             # line 4:
             # => [batch_size, 1152, 10, 1, 1]
             c_IJ = tf.nn.softmax(b_IJ, dim=2)
+            tf.summary.histogram('c_IJ', c_IJ)
 
             # At last iteration, use `u_hat` in order to receive gradients from the following graph
             if r_iter == cfg.iter_routing - 1:
@@ -155,6 +167,8 @@ def routing(input, b_IJ):
                 s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True)
                 assert s_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
 
+                tf.summary.histogram('s_J', s_J)
+
                 # line 6:
                 # squash using Eq.1,
                 v_J = squash(s_J)
@@ -162,6 +176,9 @@ def routing(input, b_IJ):
             elif r_iter < cfg.iter_routing - 1:  # Inner iterations, do not apply backpropagation
                 s_J = tf.multiply(c_IJ, u_hat_stopped)
                 s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True)
+
+                tf.summary.histogram('s_J', s_J)
+
                 v_J = squash(s_J)
 
                 # line 7:
@@ -175,6 +192,7 @@ def routing(input, b_IJ):
                 # b_IJ += tf.reduce_sum(u_produce_v, axis=0, keep_dims=True)
                 b_IJ += u_produce_v
 
+    tf.summary.histogram('v_J', v_J)
     return(v_J)
 
 
