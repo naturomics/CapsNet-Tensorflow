@@ -110,25 +110,22 @@ def routing(input, b_IJ):
         v_j the vector output of capsule j in the layer l+1.
      '''
 
-    # W: [num_caps_i, num_caps_j, len_u_i, len_v_j]
-    W = tf.get_variable('Weight', shape=(1, 1152, 10, 8, 16), dtype=tf.float32,
+    # W: [1, num_caps_i, num_caps_j * len_v_j, len_u_j, 1]
+    W = tf.get_variable('Weight', shape=(1, 1152, 160, 8, 1), dtype=tf.float32,
                         initializer=tf.random_normal_initializer(stddev=cfg.stddev))
     biases = tf.get_variable('bias', shape=(1, 1, 10, 16, 1))
 
     # Eq.2, calc u_hat
-    # do tiling for input and W before matmul
-    # input => [batch_size, 1152, 10, 8, 1]
-    # W => [batch_size, 1152, 10, 8, 16]
-    input = tf.tile(input, [1, 1, 10, 1, 1])
-    W = tf.tile(W, [cfg.batch_size, 1, 1, 1, 1])
-    assert input.get_shape() == [cfg.batch_size, 1152, 10, 8, 1]
+    # Since tf.matmul is a time-consuming op,
+    # A better solution is using element-wise multiply, reduce_sum and reshape
+    # ops instead. Matmul [a, b] x [b, c] is equal to a series ops as
+    # element-wise multiply [a*c, b] * [a*c, b], reduce_sum at axis=1 and
+    # reshape to [a, c]
+    input = tf.tile(input, [1, 1, 160, 1, 1])
+    assert input.get_shape() == [cfg.batch_size, 1152, 160, 8, 1]
 
-    # in last 2 dims:
-    # [8, 16].T x [8, 1] => [16, 1] => [batch_size, 1152, 10, 16, 1]
-    # tf.scan, 3 iter, 1080ti, 128 batch size: 10min/epoch
-    # u_hat = tf.scan(lambda ac, x: tf.matmul(W, x, transpose_a=True), input, initializer=tf.zeros([1152, 10, 16, 1]))
-    # tf.tile, 3 iter, 1080ti, 128 batch size: 6min/epoch
-    u_hat = tf.matmul(W, input, transpose_a=True)
+    u_hat = tf.reduce_sum(W * input, axis=3, keepdims=True)
+    u_hat = tf.reshape(u_hat, shape=[-1, 1152, 10, 16, 1])
     assert u_hat.get_shape() == [cfg.batch_size, 1152, 10, 16, 1]
 
     # In forward, u_hat_stopped = u_hat; in backward, no gradient passed back from u_hat_stopped to u_hat
@@ -165,7 +162,7 @@ def routing(input, b_IJ):
                 # then matmul in the last tow dim: [16, 1].T x [16, 1] => [1, 1], reduce mean in the
                 # batch_size dim, resulting in [1, 1152, 10, 1, 1]
                 v_J_tiled = tf.tile(v_J, [1, 1152, 1, 1, 1])
-                u_produce_v = tf.matmul(u_hat_stopped, v_J_tiled, transpose_a=True)
+                u_produce_v = tf.reduce_sum(u_hat_stopped * v_J_tiled, axis=3, keep_dims=True)
                 assert u_produce_v.get_shape() == [cfg.batch_size, 1152, 10, 1, 1]
 
                 # b_IJ += tf.reduce_sum(u_produce_v, axis=0, keep_dims=True)
