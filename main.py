@@ -90,12 +90,32 @@ def train(model, supervisor, num_label):
         fd_loss.close()
 
 
+# Defining custom operations
+rf = tf.load_op_library('./custom_ops/fix_resolution.so')
+fix_resolution = rf.fix_resolution
+@tf.RegisterGradient("FixResolutionGrad")
+def _fix_resolution_grad(unused_op, grad):
+  return grad # does nothing
+
+def update_vars_op(variables):
+    for var in variables:
+        if var.name == 'rough':
+            var = fix_resolution(var,
+                    cfg.fixed_rough_range_bits, cfg.fixed_rough_precision_bits)
+        elif var.name == 'fine':
+            var = fix_resolution(var,
+                    cfg.fixed_fine_range_bits, cfg.fixed_fine_precision_bits)
+
+
 def evaluation(model, supervisor, num_label):
     teX, teY, num_te_batch = load_data(cfg.dataset, cfg.batch_size, is_training=False)
     fd_test_acc = save_to()
     with supervisor.managed_session(config=tf.ConfigProto(allow_soft_placement=True)) as sess:
         supervisor.saver.restore(sess, tf.train.latest_checkpoint(cfg.logdir))
         tf.logging.info('Model restored!')
+
+        if cfg.is_fixed:
+            sess.run(update_vars_op(tf.trainable_variables()))
 
         test_acc = 0
         for i in tqdm(range(num_te_batch), total=num_te_batch, ncols=70, leave=False, unit='b'):

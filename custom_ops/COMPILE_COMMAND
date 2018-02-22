@@ -1,0 +1,9 @@
+TF_INC=$(python -c 'import tensorflow as tf; print(tf.sysconfig.get_include())')
+TF_LIB=$(python -c 'import tensorflow as tf; print(tf.sysconfig.get_lib())')
+gcc -std=c++11 -shared custom_ops/fix_resolution.cc -o custom_ops/fix_resolution.so -fPIC -I$TF_INC -I$TF_INC/external/nsync/public -L$TF_LIB -O2
+
+# add flag below to gcc command only if necessary
+-D_GLIBCXX_USE_CXX11_ABI=0
+
+# additional inclusion of -ltensorflow_framework allows use in tf v1.4
+g++ -std=c++11 -shared custom_ops/fix_resolution.cc -o custom_ops/fix_resolution.so -fPIC -I$TF_INC -I$TF_INC/external/nsync/public -L$TF_LIB -ltensorflow_framework -O2 -D_GLIBCXX_USE_CXX11_ABI=0
