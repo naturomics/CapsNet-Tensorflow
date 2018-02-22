@@ -154,6 +154,7 @@ def routing(input, b_IJ):
         with tf.variable_scope('iter_' + str(r_iter)):
             # line 4:
             # => [batch_size, 1152, 10, 1, 1]
+            tf.summary.histogram('b_IJ', b_IJ)
             c_IJ = tf.nn.softmax(b_IJ, dim=2)
             tf.summary.histogram('c_IJ', c_IJ)
 
