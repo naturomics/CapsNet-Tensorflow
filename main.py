@@ -1,10 +1,18 @@
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import os
 import sys
 import numpy as np
 import tensorflow as tf
-from tqdm import tqdm
+#from tqdm import tqdm
 
+from larcv import larcv
+from larcv.dataloader2 import larcv_threadio
+from config import ssnet_config
 from config import cfg
+
 from utils import load_data
 from capsNet import CapsNet
 
@@ -54,7 +62,7 @@ def train(model, supervisor, num_label):
             if supervisor.should_stop():
                 print('supervisor stoped!')
                 break
-            for step in tqdm(range(num_tr_batch), total=num_tr_batch, ncols=70, leave=False, unit='b'):
+            for step in range(num_tr_batch):
                 start = step * cfg.batch_size
                 end = start + cfg.batch_size
                 global_step = epoch * num_tr_batch + step
@@ -98,7 +106,7 @@ def evaluation(model, supervisor, num_label):
         tf.logging.info('Model restored!')
 
         test_acc = 0
-        for i in tqdm(range(num_te_batch), total=num_te_batch, ncols=70, leave=False, unit='b'):
+        for i in range(num_te_batch):
             start = i * cfg.batch_size
             end = start + cfg.batch_size
             acc = sess.run(model.accuracy, {model.X: teX[start:end], model.labels: teY[start:end]})
