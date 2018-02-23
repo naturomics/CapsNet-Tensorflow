@@ -8,6 +8,8 @@ import numpy as np
 import tensorflow as tf
 
 from config import cfg
+from utils import reduce_sum
+from utils import softmax
 
 
 epsilon = 1e-9
@@ -136,7 +138,7 @@ def routing(input, b_IJ):
         with tf.variable_scope('iter_' + str(r_iter)):
             # line 4:
             # => [batch_size, 1152, 10, 1, 1]
-            c_IJ = tf.nn.softmax(b_IJ, dim=2)
+            c_IJ = softmax(b_IJ, axis=2)
 
             # At last iteration, use `u_hat` in order to receive gradients from the following graph
             if r_iter == cfg.iter_routing - 1:
@@ -145,7 +147,7 @@ def routing(input, b_IJ):
                 # => [batch_size, 1152, 10, 16, 1]
                 s_J = tf.multiply(c_IJ, u_hat)
                 # then sum in the second dim, resulting in [batch_size, 1, 10, 16, 1]
-                s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True) + biases
+                s_J = reduce_sum(s_J, axis=1, keepdims=True) + biases
                 assert s_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
 
                 # line 6:
@@ -154,7 +156,7 @@ def routing(input, b_IJ):
                 assert v_J.get_shape() == [cfg.batch_size, 1, 10, 16, 1]
             elif r_iter < cfg.iter_routing - 1:  # Inner iterations, do not apply backpropagation
                 s_J = tf.multiply(c_IJ, u_hat_stopped)
-                s_J = tf.reduce_sum(s_J, axis=1, keep_dims=True) + biases
+                s_J = reduce_sum(s_J, axis=1, keepdims=True) + biases
                 v_J = squash(s_J)
 
                 # line 7:
@@ -162,7 +164,7 @@ def routing(input, b_IJ):
                 # then matmul in the last tow dim: [16, 1].T x [16, 1] => [1, 1], reduce mean in the
                 # batch_size dim, resulting in [1, 1152, 10, 1, 1]
                 v_J_tiled = tf.tile(v_J, [1, 1152, 1, 1, 1])
-                u_produce_v = tf.reduce_sum(u_hat_stopped * v_J_tiled, axis=3, keep_dims=True)
+                u_produce_v = reduce_sum(u_hat_stopped * v_J_tiled, axis=3, keepdims=True)
                 assert u_produce_v.get_shape() == [cfg.batch_size, 1152, 10, 1, 1]
 
                 # b_IJ += tf.reduce_sum(u_produce_v, axis=0, keep_dims=True)
@@ -178,7 +180,7 @@ def squash(vector):
     Returns:
         A tensor with the same shape as vector but squashed in 'vec_len' dimension.
     '''
-    vec_squared_norm = tf.reduce_sum(tf.square(vector), -2, keep_dims=True)
+    vec_squared_norm = reduce_sum(tf.square(vector), -2, keepdims=True)
     scalar_factor = vec_squared_norm / (1 + vec_squared_norm) / tf.sqrt(vec_squared_norm + epsilon)
     vec_squashed = scalar_factor * vector  # element-wise
     return(vec_squashed)

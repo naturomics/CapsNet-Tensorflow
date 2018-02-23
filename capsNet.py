@@ -8,6 +8,8 @@ import tensorflow as tf
 
 from config import cfg
 from utils import get_batch_data
+from utils import softmax
+from utils import reduce_sum
 from capsLayer import CapsLayer
 
 
@@ -62,9 +64,9 @@ class CapsNet(object):
         with tf.variable_scope('Masking'):
             # a). calc ||v_c||, then do softmax(||v_c||)
             # [batch_size, 10, 16, 1] => [batch_size, 10, 1, 1]
-            self.v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2),
-                                                  axis=2, keep_dims=True) + epsilon)
-            self.softmax_v = tf.nn.softmax(self.v_length, dim=1)
+            self.v_length = tf.sqrt(reduce_sum(tf.square(self.caps2),
+                                               axis=2, keepdims=True) + epsilon)
+            self.softmax_v = softmax(self.v_length, axis=1)
             assert self.softmax_v.get_shape() == [cfg.batch_size, 10, 1, 1]
 
             # b). pick out the index of max softmax val of the 10 caps
@@ -89,7 +91,7 @@ class CapsNet(object):
             else:
                 # self.masked_v = tf.matmul(tf.squeeze(self.caps2), tf.reshape(self.Y, (-1, 10, 1)), transpose_a=True)
                 self.masked_v = tf.multiply(tf.squeeze(self.caps2), tf.reshape(self.Y, (-1, 10, 1)))
-                self.v_length = tf.sqrt(tf.reduce_sum(tf.square(self.caps2), axis=2, keep_dims=True) + epsilon)
+                self.v_length = tf.sqrt(reduce_sum(tf.square(self.caps2), axis=2, keepdims=True) + epsilon)
 
         # 2. Reconstructe the MNIST images with 3 FC layers
         # [batch_size, 1, 16, 1] => [batch_size, 16] => [batch_size, 512]
