@@ -97,14 +97,15 @@ fix_resolution = rf.fix_resolution
 def _fix_resolution_grad(unused_op, grad):
   return grad # does nothing
 
-def update_vars_op(variables):
+def update_vars(variables):
+    op = []
     for var in variables:
-        if var.name == 'rough':
-            var = fix_resolution(var,
-                    cfg.fixed_rough_range_bits, cfg.fixed_rough_precision_bits)
-        elif var.name == 'fine':
-            var = fix_resolution(var,
-                    cfg.fixed_fine_range_bits, cfg.fixed_fine_precision_bits)
+        nvar = fix_resolution(var,
+                cfg.fixed_fine_range_bits, cfg.fixed_fine_precision_bits)
+        op.append(tf.assign(var, nvar))
+
+    assert op is not []
+    return op
 
 
 def evaluation(model, supervisor, num_label):
@@ -114,15 +115,20 @@ def evaluation(model, supervisor, num_label):
         supervisor.saver.restore(sess, tf.train.latest_checkpoint(cfg.logdir))
         tf.logging.info('Model restored!')
 
-        if cfg.is_fixed:
-            sess.run(update_vars_op(tf.trainable_variables()))
-
         test_acc = 0
         for i in tqdm(range(num_te_batch), total=num_te_batch, ncols=70, leave=False, unit='b'):
             start = i * cfg.batch_size
             end = start + cfg.batch_size
-            acc = sess.run(model.accuracy, {model.X: teX[start:end], model.labels: teY[start:end]})
+
+            if i == 0 and cfg.is_fixed:
+                print('Fixing accuracies before first step')
+                update_vars_op = update_vars(tf.trainable_variables())
+                _, acc = sess.run([update_vars_op, model.accuracy], {model.X: teX[start:end], model.labels: teY[start:end]})
+            else:
+                acc = sess.run(model.accuracy, {model.X: teX[start:end], model.labels: teY[start:end]})
+
             test_acc += acc
+
         test_acc = test_acc / (cfg.batch_size * num_te_batch)
         fd_test_acc.write(str(test_acc))
         fd_test_acc.close()
