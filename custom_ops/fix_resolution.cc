@@ -23,22 +23,21 @@ class FixResolutionOp : public OpKernel {
       // Grab the input tensor
       const Tensor& input_tensor = context->input(0);
       const Tensor& range_bits = context->input(1);
-      //const Tensor& precision_bits = context->input(2);
+      const Tensor& precision_bits = context->input(2);
 
       auto input = input_tensor.flat<float>();
-      auto m_n = range_bits.flat<int>();
-      std::cout << "m: " << m_n(0);
-      std::cout << "m: " << m_n(1);
-      std::cout << "m: " << m_n(2);
-      std::cout << "m: " << m_n(3);
+      auto m = range_bits.flat<int>();
+      auto n = precision_bits.flat<int>();
+      std::cout << "m0: " << m(0) << std::endl;
+      std::cout << "n0: " << n(0) << std::endl;
      
-      float range_min = -1 * pow(2, (m_n(0) - 1));
-      float range_max = pow(2, (m_n(0) - 1)) - pow(2, -1 * m_n(1));
-      float resolution = pow(2, -1 * m_n(1));
+      float range_min = -1 * pow(2, (m(0) - 1));
+      float range_max = pow(2, (m(0) - 1)) - pow(2, -1 * n(0));
+      float resolution = pow(2, -1 * n(0));
 
-      //std::cout << "range: [" << range_min << ", " << range_max << "]"
-      //  << " | resolution: " << resolution
-      //  << std::endl;
+      std::cout << "range: [" << range_min << ", " << range_max << "]"
+        << " | resolution: " << resolution
+        << std::endl;
 
       // Create an output tensor
       Tensor* output_tensor = NULL;

@@ -90,24 +90,6 @@ def train(model, supervisor, num_label):
         fd_loss.close()
 
 
-# Defining custom operations
-rf = tf.load_op_library('./custom_ops/fix_resolution.so')
-fix_resolution = rf.fix_resolution
-@tf.RegisterGradient("FixResolutionGrad")
-def _fix_resolution_grad(unused_op, grad):
-  return grad # does nothing
-
-def update_vars(variables):
-    op = []
-    for var in variables:
-        nvar = fix_resolution(var,
-                cfg.fixed_fine_range_bits, cfg.fixed_fine_precision_bits)
-        op.append(tf.assign(var, nvar))
-
-    assert op is not []
-    return op
-
-
 def evaluation(model, supervisor, num_label):
     teX, teY, num_te_batch = load_data(cfg.dataset, cfg.batch_size, is_training=False)
     fd_test_acc = save_to()
@@ -122,8 +104,11 @@ def evaluation(model, supervisor, num_label):
 
             if i == 0 and cfg.is_fixed:
                 print('Fixing accuracies before first step')
-                update_vars_op = update_vars(tf.trainable_variables())
-                _, acc = sess.run([update_vars_op, model.accuracy], {model.X: teX[start:end], model.labels: teY[start:end]})
+                _, acc, summary_str = sess.run([model.update_variables_ops,
+                                                model.accuracy,
+                                                model.train_summary],
+                    {model.X: teX[start:end], model.labels: teY[start:end]})
+                supervisor.summary_writer.add_summary(summary_str, i)
             else:
                 acc = sess.run(model.accuracy, {model.X: teX[start:end], model.labels: teY[start:end]})
 
@@ -140,14 +125,14 @@ def main(_):
     num_label = 10
     model = CapsNet()
     tf.logging.info(' Graph loaded')
-
-    sv = tf.train.Supervisor(graph=model.graph, logdir=cfg.logdir, save_model_secs=0)
-
+    
     if cfg.is_training:
+        sv = tf.train.Supervisor(graph=model.graph, logdir=cfg.logdir, save_model_secs=0)
         tf.logging.info(' Start training...')
         train(model, sv, num_label)
         tf.logging.info('Training done')
     else:
+        sv = tf.train.Supervisor(graph=model.graph, logdir=cfg.logdir_inference, save_model_secs=0)
         evaluation(model, sv, num_label)
 
 if __name__ == "__main__":

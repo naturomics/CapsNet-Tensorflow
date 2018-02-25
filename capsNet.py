@@ -14,6 +14,13 @@ from capsLayer import CapsLayer
 
 epsilon = 1e-9
 
+# Defining custom operations
+rf = tf.load_op_library('./custom_ops/fix_resolution.so')
+fix_resolution = rf.fix_resolution
+@tf.RegisterGradient("FixResolutionGrad")
+def _fix_resolution_grad(unused_op, grad):
+  return grad # does nothing
+
 
 class CapsNet(object):
     def __init__(self, is_training=True):
@@ -27,12 +34,15 @@ class CapsNet(object):
 
                 self.build_arch()
                 self.loss()
+
+                self.update_variables()
                 self._summary()
 
                 # t_vars = tf.trainable_variables()
                 self.global_step = tf.Variable(0, name='global_step', trainable=False)
                 self.optimizer = tf.train.AdamOptimizer()
                 self.train_op = self.optimizer.minimize(self.total_loss, global_step=self.global_step)  # var_list=t_vars)
+
             else:
                 self.X = tf.placeholder(tf.float32, shape=(cfg.batch_size, 28, 28, 1))
                 self.labels = tf.placeholder(tf.int32, shape=(cfg.batch_size, ))
@@ -40,6 +50,20 @@ class CapsNet(object):
                 self.build_arch()
 
         tf.logging.info('Seting up the main structure')
+
+    def update_variables(self):
+        variables = tf.trainable_variables()
+        op = []
+        for var in variables:
+            tf.summary.histogram('before-' + var.name, var)
+            nvar = fix_resolution(var,
+                    cfg.fixed_fine_range_bits, cfg.fixed_fine_precision_bits)
+            tf.summary.histogram('after-' + nvar.name, nvar)
+            op.append(tf.assign(var, nvar))
+
+        assert op is not []
+        self.update_variables_ops = op
+
 
     def build_arch(self):
         with tf.variable_scope('Conv1_layer'):
@@ -146,15 +170,27 @@ class CapsNet(object):
 
     # Summary
     def _summary(self):
-        tf.summary.scalar('train/margin_loss', self.margin_loss)
-        tf.summary.scalar('train/reconstruction_loss', self.reconstruction_err)
-        tf.summary.scalar('train/total_loss', self.total_loss)
+        if cfg.is_fixed:
+            tf.summary.scalar('fix_variables/margin_loss', self.margin_loss)
+            tf.summary.scalar('fix_variables/reconstruction_loss', self.reconstruction_err)
+            tf.summary.scalar('fix_variables/total_loss', self.total_loss)
 
-        # Capsule histograms
+            recon_img = tf.reshape(self.decoded, shape=(cfg.batch_size, 28, 28, 1))
+            tf.summary.image('reconstruction_img', recon_img)
 
-        recon_img = tf.reshape(self.decoded, shape=(cfg.batch_size, 28, 28, 1))
-        tf.summary.image('reconstruction_img', recon_img)
+            self.train_summary = tf.summary.merge_all()
+            correct_prediction = tf.equal(tf.to_int32(self.labels), self.argmax_idx)
+            self.accuracy = tf.reduce_sum(tf.cast(correct_prediction, tf.float32))
+        else:
+            tf.summary.scalar('train/margin_loss', self.margin_loss)
+            tf.summary.scalar('train/reconstruction_loss', self.reconstruction_err)
+            tf.summary.scalar('train/total_loss', self.total_loss)
 
-        self.train_summary = tf.summary.merge_all()
-        correct_prediction = tf.equal(tf.to_int32(self.labels), self.argmax_idx)
-        self.accuracy = tf.reduce_sum(tf.cast(correct_prediction, tf.float32))
+            # Capsule histograms
+
+            recon_img = tf.reshape(self.decoded, shape=(cfg.batch_size, 28, 28, 1))
+            tf.summary.image('reconstruction_img', recon_img)
+
+            self.train_summary = tf.summary.merge_all()
+            correct_prediction = tf.equal(tf.to_int32(self.labels), self.argmax_idx)
+            self.accuracy = tf.reduce_sum(tf.cast(correct_prediction, tf.float32))
