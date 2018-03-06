@@ -126,7 +126,7 @@ def routing(input, b_IJ):
     input = tf.tile(input, [1, 1, 160, 1, 1])
     assert input.get_shape() == [cfg.batch_size, 1152, 160, 8, 1]
 
-    u_hat = tf.reduce_sum(W * input, axis=3, keepdims=True)
+    u_hat = reduce_sum(W * input, axis=3, keepdims=True)
     u_hat = tf.reshape(u_hat, shape=[-1, 1152, 10, 16, 1])
     assert u_hat.get_shape() == [cfg.batch_size, 1152, 10, 16, 1]
 
