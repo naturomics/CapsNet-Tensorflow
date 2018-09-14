@@ -132,3 +132,15 @@ def softmax(logits, axis=None):
         return tf.nn.softmax(logits, axis=axis)
     except:
         return tf.nn.softmax(logits, dim=axis)
+
+
+def get_shape(inputs, name=None):
+    name = "shape" if name is None else name
+    with tf.name_scope(name):
+        static_shape = inputs.get_shape().as_list()
+        dynamic_shape = tf.shape(inputs)
+        shape = []
+        for i, dim in enumerate(static_shape):
+            dim = dim if dim is not None else dynamic_shape[i]
+            shape.append(dim)
+        return(shape)
